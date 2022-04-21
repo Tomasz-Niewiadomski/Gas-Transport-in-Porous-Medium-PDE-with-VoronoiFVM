@@ -79,7 +79,7 @@ function create_grid(n, d, L)
 end;
 
 # ╔═╡ a8eec904-e5bd-4f0d-837b-95b44bbcded8
-function main(;n = 100 , m = 2, Plotter = nothing, verbose = false, 						 unknown_storage = :sparse, tend = 0.1, tstep = 0.0001, d = 1, L = 1)
+function main(;n = 110 , m = 2, Plotter = nothing, verbose = false, 						 unknown_storage = :sparse, tend = 0.1, tstep = 0.0001, d = 1, L = 1)
 	
 	grid = create_grid(n, d, L)
 	
@@ -154,13 +154,13 @@ round(error,digits = 5 )
 
 # ╔═╡ c5e7157c-c9cf-4960-b95a-754853db89a2
 errors = ([
-	(10, 0.05276), (20, 0.05785), (30,0.03493), (40, 0.03649), (50, 0.0395), (60, 0.03534), (70, 0.04017), (80, 0.04093), (90, 0.04441), (100, 0.04626)
+	(10, 0.05276), (20, 0.05785), (30,0.03493), (40, 0.03649), (50, 0.0395), (60, 0.03534), (70, 0.04017), (80, 0.04093), (90, 0.04441), (100, 0.04626), (110, 0.04736)
 		 ])
 
 # ╔═╡ 15003017-4a1a-4c4c-bab9-1f0defb78b86
 begin
-	scatter(errors, xlabel = "Number of points", ylabel = "Error",label = false, colour = "darkblue", s = 1.4 , title = "Error at the last timestep", size = (600, 600))
-	plot!(errors, label = false, colour = "black", lw = 0.9)
+	scatter(errors, xlabel = "Number of points", ylabel = "Error",label = false, colour = "darkblue", title = "Error at the last timestep", size = (600, 600) ,ms = 4.)
+	plot!(errors, label = false, colour = "black", lw = 0.9, s = :dashdotdot)
 	
 end
 
@@ -1595,6 +1595,6 @@ version = "0.9.1+5"
 # ╟─62ce9cf8-39b3-4de1-a4c3-40f1b6ce59c0
 # ╠═517fd6f6-b02e-4960-b0b7-2bd8af4a3bbf
 # ╠═c5e7157c-c9cf-4960-b95a-754853db89a2
-# ╟─15003017-4a1a-4c4c-bab9-1f0defb78b86
+# ╠═15003017-4a1a-4c4c-bab9-1f0defb78b86
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
