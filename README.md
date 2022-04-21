@@ -1,2 +1,2 @@
 # scientific-computing-TUB
-# Solving Porous medium Equation Using VornoiFVM.jl
+# Solving Porous medium equation Using VornoiFVM.jl
