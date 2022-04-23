@@ -34,12 +34,8 @@ function create_grid(n,d)
 	end
 end
 
-# ╔═╡ fae6e821-a241-45f8-95c8-9eb6b0ac8a07
-function solve_gas_transport(
-							grid; 
-							m = 2, t0 = 0.001, tstep = 0.0001, tend = 0.1, unknown_storage = :sparse
-							)
-	
+# ╔═╡ f6424ae1-bace-4970-971c-e195ea70ba5a
+function create_system(grid; m = 2, unknown_storage = :sparse)
 	
 	physics = VoronoiFVM.Physics(
                                 flux = function(f, u, edge)
@@ -52,12 +48,17 @@ function solve_gas_transport(
                                 )
 
     system = VoronoiFVM.System(grid, physics, unknown_storage = unknown_storage)
+
+	return system
+end
+
+# ╔═╡ 1699dde6-f137-4d76-beb6-6d28457d49f6
+function solve_system(grid, system; t0 = 0.01, tstep = 0.001, tend = 0.1)
 	
 	enable_species!(system, 1, [1])
-
 	
 	# inival ---------------------------
-	function barenblatt_iniv(x; t = 0.001, M = 2, d = 1) # Method for 1D grid
+	function barenblatt_iniv(x; t = 0.01, M = 2, d = 1) # Method for 1D grid
    
 	    Γ = 1.
 		α = 1. /(M - 1.0 + 2.0/d)
@@ -67,7 +68,7 @@ function solve_gas_transport(
 		return z
 	end
 
-	function barenblatt_iniv(x, y; t = 0.001, M = 2 , d = 2) # Method for 2D grid
+	function barenblatt_iniv(x, y; t = 0.01, M = 2 , d = 2) # Method for 2D grid
 	
 	    Γ = 1.
 		α = 1. /(M - 1.0 + 2.0/d)
@@ -76,12 +77,11 @@ function solve_gas_transport(
 	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *d*M*t^(2. *α/d)))^(1. /(M-1.)))
 		return z
 	end
-
+	
 	inival = unknowns(system)
     inival[1, :] .= map(barenblatt_iniv, grid) # Map initial conditions onto the grid
 	# end inival ---------------------------
 
-	
 	# control ------------------------------
 	control = VoronoiFVM.SolverControl()
 	control.Δt_min = 0.01*tstep
@@ -93,36 +93,56 @@ function solve_gas_transport(
 
 	tsol = solve(system, inival = inival, times = [t0, tend]; control=control)
 
-	return tsol, system
+	return tsol
 end
 
 # ╔═╡ f828e694-a2af-4e7e-9be9-ed858fdfad01
 begin
 	nx = 40
+	
 	grid1d = create_grid(nx, 1)
 	grid2d = create_grid(nx, 2)
-end
+
+	system1d = create_system(grid1d)
+	system2d = create_system(grid2d)
+	
+end;
 
 # ╔═╡ 1767b8ad-b514-451d-82c3-749fc1e9d33f
-tsol1d , sys1d = solve_gas_transport(grid1d)
+begin
+	time_sol_1d = solve_system(grid1d,system1d)
+	time_sol_2d = solve_system(grid2d,system2d)
+end
 
 # ╔═╡ 4dc9c662-26da-4c62-b81f-3cb3a3ba8c8f
 vis = GridVisualizer(Plotter = Plots)
 
-# ╔═╡ d4d160eb-6e74-43c5-b141-e5ee82e246be
-scalarplot!(vis, sys1d, tsol1d, show = true ,aspect=6)
+# ╔═╡ 7bbfe6dd-a9ac-45bd-a446-2269dc16af98
+md" ## 1D"
 
-# ╔═╡ 8ba3277c-fab3-4f46-8269-1bbaa0829574
-tsol2d, sys2d = solve_gas_transport(grid2d);
+# ╔═╡ d4d160eb-6e74-43c5-b141-e5ee82e246be
+scalarplot!(vis, system1d, time_sol_1d, show = true ,aspect=6)
+
+# ╔═╡ 1e434642-527a-4c32-afe7-91e6a79a9a93
+surface(time_sol_1d[1, :, :])
+
+# ╔═╡ f58a1136-4d29-4c22-82e7-a7be86d5398f
+md" ## 2D"
 
 # ╔═╡ e8fa29be-6418-4d39-978a-16da75c4e972
-vis2d = GridVisualizer(Plotter = GLMakie, dim = 2)
+vis2d = GridVisualizer(Plotter = Plots, dim = 2)
 
 # ╔═╡ a896264c-b0f5-4085-8f94-d017544cd7ed
-t = @bind t Slider(1:length(tsol2d.t), show_value = true)
+t = @bind t Slider(1:length(time_sol_2d.t), show_value = true)
 
 # ╔═╡ c6ffdd94-5bef-4d55-80d8-5486ff055cd1
-scalarplot!(vis2d,grid2d,tsol2d[1,:,t],size=(300,300),title="solution 2D", show = true)
+scalarplot!(vis2d,grid2d,time_sol_2d[1,:,t],size=(300,300),title="solution 2D", show = true)
+
+# ╔═╡ ab91a182-0c21-4b17-b599-bfb413a57055
+md"## DOESNT WORK ⇓" 
+
+# ╔═╡ 155c9e3e-465c-4a9a-9928-9cb824d1602b
+scalarplot!(vis2d, system2d, time_sol_2d, aspect=6, title="Spacetime diagram", levels=20)	
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1543,14 +1563,19 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═cf19a6ee-c2f8-11ec-3c35-6f4d3e2bab43
 # ╠═11beb896-b7f4-4d5c-88e7-69cd24103314
-# ╠═fae6e821-a241-45f8-95c8-9eb6b0ac8a07
+# ╠═f6424ae1-bace-4970-971c-e195ea70ba5a
+# ╠═1699dde6-f137-4d76-beb6-6d28457d49f6
 # ╠═f828e694-a2af-4e7e-9be9-ed858fdfad01
 # ╠═1767b8ad-b514-451d-82c3-749fc1e9d33f
 # ╠═4dc9c662-26da-4c62-b81f-3cb3a3ba8c8f
+# ╟─7bbfe6dd-a9ac-45bd-a446-2269dc16af98
 # ╠═d4d160eb-6e74-43c5-b141-e5ee82e246be
-# ╠═8ba3277c-fab3-4f46-8269-1bbaa0829574
-# ╠═e8fa29be-6418-4d39-978a-16da75c4e972
-# ╠═a896264c-b0f5-4085-8f94-d017544cd7ed
+# ╠═1e434642-527a-4c32-afe7-91e6a79a9a93
+# ╟─f58a1136-4d29-4c22-82e7-a7be86d5398f
+# ╟─e8fa29be-6418-4d39-978a-16da75c4e972
+# ╟─a896264c-b0f5-4085-8f94-d017544cd7ed
 # ╠═c6ffdd94-5bef-4d55-80d8-5486ff055cd1
+# ╟─ab91a182-0c21-4b17-b599-bfb413a57055
+# ╠═155c9e3e-465c-4a9a-9928-9cb824d1602b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
