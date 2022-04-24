@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.18.4
+# v0.19.2
 
 using Markdown
 using InteractiveUtils
@@ -26,7 +26,7 @@ begin
 end
 
 # ╔═╡ 8aae8386-06da-42a3-a6c3-9daba1e78769
-md"# Gas Transport Equation v3.1
+md"# Gas Transport Equation v3.2
 $\frac{\partial u}{\partial t} - \nabla u^m = 0$"
 
 # ╔═╡ 364363a6-92b6-4927-890c-a73efe5cb022
@@ -38,12 +38,14 @@ $r = |x|$ ,
 "
 
 # ╔═╡ 11beb896-b7f4-4d5c-88e7-69cd24103314
-function create_grid(n,d)
-	X = collect(-1:1/n:1)
-	if d == 1
+function create_grid(grid_points, dimensions)
+	X = -1:1/grid_points:1
+	if dimensions == 1
       grid = simplexgrid(X)
+	elseif dimensions == 2
+      grid = simplexgrid(X, X)
 	else
-      grid = simplexgrid(X,X)
+		throw(ArgumentError("Only 1D and 2D are implemented"))
 	end
 	return grid
 end
@@ -72,23 +74,23 @@ function solve_system(grid, system; t0 = 0.01, tstep = 0.001, tend = 0.1)
 	enable_species!(system, 1, [1])
 	
 	# inival ---------------------------
-	function barenblatt_iniv(x; t = 0.01, M = 2, d = 1) # Method for 1D grid
+	function barenblatt_iniv(x; t = 0.01, M = 2, dims = 1)  # Method for 1D grid
    
 	    Γ = 1.
-		α = 1. /(M - 1.0 + 2.0/d)
+		α = 1. /(M - 1.0 + 2.0/dims)
 		r = abs(x)
 	
-	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *d*M*t^(2. *α/d)))^(1. /(M-1.)))
+	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *dims*M*t^(2. *α/dims)))^(1. /(M-1.)))
 		return z
 	end
 
-	function barenblatt_iniv(x, y; t = 0.01, M = 2 , d = 2) # Method for 2D grid
+	function barenblatt_iniv(x, y; t = 0.01, M = 2 , dims = 2) # Method for 2D grid
 	
 	    Γ = 1.
-		α = 1. /(M - 1.0 + 2.0/d)
+		α = 1. /(M - 1.0 + 2.0/dims)
 		r = sqrt(x^2. + y^2.)
 	
-	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *d*M*t^(2. *α/d)))^(1. /(M-1.)))
+	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *dims*M*t^(2. *α/dims)))^(1. /(M-1.)))
 		return z
 	end
 	
@@ -112,12 +114,14 @@ end
 
 # ╔═╡ f828e694-a2af-4e7e-9be9-ed858fdfad01
 begin
+	# addprocs(1)
+	grid_points = 20
 	
-	nx = 20 # Number of grid points
-	
-	grid1d = create_grid(nx, 1); grid2d = create_grid(nx, 2)
+	grid1d = create_grid(grid_points, 1) 
+	grid2d = create_grid(grid_points, 2)
 
-	system1d = create_system(grid1d); system2d = create_system(grid2d)
+	system1d = create_system(grid1d) 
+	system2d = create_system(grid2d)
 
 	time_sol_1d = solve_system(grid1d, system1d)
 	time_sol_2d = solve_system(grid2d, system2d)
@@ -133,13 +137,13 @@ timestep = @bind timestep Slider(1:length(time_sol_1d), show_value = true)
 # ╔═╡ c666ae1b-1146-46eb-aac1-c513ef87a3f4
 begin
 	
-	vis1d = GridVisualizer(Plotter = Plots, resolution=(1000, 1000), layout = (3, 1))
+	vis1d = GridVisualizer(Plotter=Plots, resolution=(1000, 1000), layout=(3, 1))
 
 	gridplot!(vis1d[1, 1], grid1d, title="1D grid", legend=:rt)
 	
 	scalarplot!(vis1d[2, 1], grid1d, time_sol_1d[1, :, timestep], limits=(0, 2), xlabel="x", title="Gas transport 1d at timestep : $timestep")
 	
-	scalarplot!(vis1d[3, 1], system1d, time_sol_1d, aspect = 6, title="Spacetime 1d gas transport", levels = 22)	
+	scalarplot!(vis1d[3, 1], system1d, time_sol_1d, aspect=6, title="Spacetime 1d gas transport", levels=22)	
 
 	reveal(vis1d)
 end
@@ -1634,13 +1638,13 @@ version = "0.9.1+5"
 # ╟─cf19a6ee-c2f8-11ec-3c35-6f4d3e2bab43
 # ╟─8aae8386-06da-42a3-a6c3-9daba1e78769
 # ╟─364363a6-92b6-4927-890c-a73efe5cb022
-# ╟─11beb896-b7f4-4d5c-88e7-69cd24103314
-# ╟─f6424ae1-bace-4970-971c-e195ea70ba5a
-# ╟─1699dde6-f137-4d76-beb6-6d28457d49f6
+# ╠═11beb896-b7f4-4d5c-88e7-69cd24103314
+# ╠═f6424ae1-bace-4970-971c-e195ea70ba5a
+# ╠═1699dde6-f137-4d76-beb6-6d28457d49f6
 # ╠═f828e694-a2af-4e7e-9be9-ed858fdfad01
 # ╟─4bb2602f-b1ae-445d-9161-ef354b28aff5
 # ╟─00c435b7-899a-49c9-9c57-3e0024b71179
-# ╟─c666ae1b-1146-46eb-aac1-c513ef87a3f4
+# ╠═c666ae1b-1146-46eb-aac1-c513ef87a3f4
 # ╟─3e0f1b81-27aa-4cd3-a07d-329b07add8b0
 # ╟─ab96db7f-6bdc-40e4-b283-4638ab926423
 # ╟─a09ed607-04fd-49f8-8ab6-59fdfd301673
