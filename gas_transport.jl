@@ -14,154 +14,204 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ de2025b0-c0c7-11ec-20c7-9f6d75358794
+# ╔═╡ cf19a6ee-c2f8-11ec-3c35-6f4d3e2bab43
 begin
-	using VoronoiFVM
+	using VoronoiFVM    
 	using GridVisualize
 	using ExtendableGrids
-	using Plots
-	using PlutoUI:Slider
 	using LinearAlgebra
+	using PlutoUI
+	#using PlutoVista
+	using Plots
 end
 
-# ╔═╡ 0d4065fd-b411-4262-b355-920b3f5646d7
-md"# Gas Transport Equation
+# ╔═╡ 8aae8386-06da-42a3-a6c3-9daba1e78769
+md"# Gas Transport Equation v3.1
 $\frac{\partial u}{\partial t} - \nabla u^m = 0$"
 
-# ╔═╡ ba5440f6-6691-4162-97b7-9c397172f827
+# ╔═╡ 364363a6-92b6-4927-890c-a73efe5cb022
 md" ## Barenblatt function 
 $b(x,t) = max \bigg ( 0,t^{-\alpha}(1-\frac{α(m-1)r^2}{2dmt\frac{2α}{d}})^{\frac{1}{m-1}} \bigg )$ where : \
 \
 $r = |x|$ ,
-
  $α = \frac{1}{m-1+\frac{2}{d}}$
 "
 
-# ╔═╡ f3ea86b7-4a1a-42be-ad35-d1a5d482aeea
-function barenblatt(x, t, m, d=1, Γ=0.2)
-	
-	α = 1/(m - 1.0 + 2.0/d)
-	r = abs(x)
-
-	try
-		return max(0.,t^(-α)*(Γ-(α*(m-1.)*r^2.)/(2. *d*m*t^(2. *α/d)))^(1. /(m-1.)))
-	catch error
-		if isa(error, DomainError)
-			return 0
-		end
+# ╔═╡ 11beb896-b7f4-4d5c-88e7-69cd24103314
+function create_grid(n,d)
+	X = collect(-1:1/n:1)
+	if d == 1
+      grid = simplexgrid(X)
+	else
+      grid = simplexgrid(X,X)
 	end
+	return grid
 end
 
-# ╔═╡ ed411fc9-ac9a-4da3-aff2-154303b6455d
-function barenblatt_old(x, t, m)
-    tx = t^(-1.0/(m+1.0))
-    xx = x*tx
-    xx = xx*xx
-    xx = 1- xx*(m-1)/(2.0*m*(m+1));
-    if xx < 0.0
-        xx = 0.0
-    end
-    return tx*xx^(1.0/(m-1.0))
-end;
-
-# ╔═╡ 9914638b-3158-49c6-aa0f-078d4b85b481
-function create_grid(n, d, L)
-	
-	h = 1.0/convert(Float64, n/2)
-	global X = collect(-L:h:L)
-	
-	if d == 1
-		grid = simplexgrid(X)
-	else
-	    grid = simplexgrid(X, X)
-	end
-	
-end;
-
-# ╔═╡ a8eec904-e5bd-4f0d-837b-95b44bbcded8
-function main(;n = 110 , m = 2, Plotter = nothing, verbose = false, 						 unknown_storage = :sparse, tend = 0.1, tstep = 0.0001, d = 1, L = 1)
-	
-	grid = create_grid(n, d, L)
+# ╔═╡ f6424ae1-bace-4970-971c-e195ea70ba5a
+function create_system(grid; m = 2, unknown_storage = :sparse)
 	
 	physics = VoronoiFVM.Physics(
-								flux = function(f, u, edge)
-        							 	 f[1] = u[1, 1]^m - u[1, 2]^m
-       								   end,
-		
-        						storage = function(f, u, node)
-        								  	f[1] = u[1]
-        								  end
-								)
-	
-	sys = VoronoiFVM.System(grid, physics, unknown_storage=unknown_storage)
-	enable_species!(sys, 1, [1])
+                                flux = function(f, u, edge)
+                                          f[1] = u[1, 1]^m - u[1, 2]^m
+                                	   end,
 
-	inival = unknowns(sys)
-	
-	# solution .= inival
-    
-	t0 = 0.001
-	
-	# inival[1, :] .= map(x-> barenblatt(x, t0, m), grid)	
-	
-	inival[1, :] .= map(x-> barenblatt(x, t0, m), X)	
+                                storage = function(f, u, node)
+                                    	     f[1] = u[1]
+                                          end
+                                )
 
+    system = VoronoiFVM.System(grid, physics, unknown_storage = unknown_storage)
 
+	return system
+end
+
+# ╔═╡ 1699dde6-f137-4d76-beb6-6d28457d49f6
+function solve_system(grid, system; t0 = 0.01, tstep = 0.001, tend = 0.1)
+	
+	enable_species!(system, 1, [1])
+	
+	# inival ---------------------------
+	function barenblatt_iniv(x; t = 0.01, M = 2, d = 1) # Method for 1D grid
+   
+	    Γ = 1.
+		α = 1. /(M - 1.0 + 2.0/d)
+		r = abs(x)
+	
+	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *d*M*t^(2. *α/d)))^(1. /(M-1.)))
+		return z
+	end
+
+	function barenblatt_iniv(x, y; t = 0.01, M = 2 , d = 2) # Method for 2D grid
+	
+	    Γ = 1.
+		α = 1. /(M - 1.0 + 2.0/d)
+		r = sqrt(x^2. + y^2.)
+	
+	    z = max(0., t^(-α)*(Γ-(α*(M-1.)*r^2.)/(2. *d*M*t^(2. *α/d)))^(1. /(M-1.)))
+		return z
+	end
+	
+	inival = unknowns(system)
+    inival[1, :] .= map(barenblatt_iniv, grid) # Map initial conditions onto the grid
+	# end inival ---------------------------
+
+	# control ------------------------------
 	control = VoronoiFVM.SolverControl()
-	control.Δt_min = 0.01*tstep
+	control.Δt_min = 0.01*tstep # for larger nx tstep < 0.001 now(tstep=0.0001)
 	control.Δt = tstep
 	control.Δt_max = 0.1*tend
 	control.Δu_opt = 0.05
+	# end control --------------------------
 
-    tsol = solve(sys, inival=inival, times=[0, tend]; control=control)
-	
-	time = collect(t0:tstep:tend)
-	
-	# err = norm(tsol[1, :, end] - map(x->barenblatt(x, tend, m), X))
 
-	err = norm(tsol[1, :, end] - map(x->barenblatt(x, tend, m), grid))
-	
-	return sys, grid, tsol ,err
-end;
+	tsol = solve(system, inival = inival, times = [t0, tend]; control = control)
 
-# ╔═╡ a6879829-7c76-4c20-99f3-f28134b0ff19
-sys, grid, tsol, error = main();
-
-# ╔═╡ a191fc26-6097-4eb3-9d8c-f3b75775f7b0
-md" ## 1D Solution"
-
-# ╔═╡ 7bbc6b44-7f12-4676-b39a-4e9beab3791f
-timestep = @bind timestep Slider(1:length(tsol), show_value = true)
-
-# ╔═╡ 6f9298aa-6313-45e1-aafe-b67abeaacb81
-begin
-	vis = GridVisualizer(Plotter=Plots, resolution=(1000, 1000), layout=(3,1))
-
-	gridplot!(vis[1, 1], grid, title="1D grid", legend=:rt)
-	
-	scalarplot!(vis[2, 1], grid, tsol[1, :, timestep], limits=(0, 2), xlabel="x", title="Gas transport")
-	
-	scalarplot!(vis[3, 1], sys, tsol, aspect=6, title="Spacetime diagram", levels=20)	
-
-	reveal(vis)
+	return tsol
 end
 
-# ╔═╡ 62ce9cf8-39b3-4de1-a4c3-40f1b6ce59c0
-surface(tsol[1, :, :], xlabel="Time [μ sec]", xticks = (0:20:158), yticks = false, zlabel = "Values", zticks = false, size = (600,600), title="Space-time diagram",grid = false)
-
-# ╔═╡ 517fd6f6-b02e-4960-b0b7-2bd8af4a3bbf
-round(error,digits = 5 )
-
-# ╔═╡ c5e7157c-c9cf-4960-b95a-754853db89a2
-errors = ([
-	(10, 0.05276), (20, 0.05785), (30,0.03493), (40, 0.03649), (50, 0.0395), (60, 0.03534), (70, 0.04017), (80, 0.04093), (90, 0.04441), (100, 0.04626), (110, 0.04736)
-		 ])
-
-# ╔═╡ 15003017-4a1a-4c4c-bab9-1f0defb78b86
+# ╔═╡ f828e694-a2af-4e7e-9be9-ed858fdfad01
 begin
-	scatter(errors, xlabel = "Number of points", ylabel = "Error",label = false, colour = "darkblue", title = "Error at the last timestep", size = (600, 600) ,ms = 4.)
-	plot!(errors, label = false, colour = "black", lw = 0.9, s = :dashdotdot)
 	
+	nx = 20 # Number of grid points
+	
+	grid1d = create_grid(nx, 1); grid2d = create_grid(nx, 2)
+
+	system1d = create_system(grid1d); system2d = create_system(grid2d)
+
+	time_sol_1d = solve_system(grid1d, system1d)
+	time_sol_2d = solve_system(grid2d, system2d)
+	
+end;
+
+# ╔═╡ 4bb2602f-b1ae-445d-9161-ef354b28aff5
+md" ## 1D System"
+
+# ╔═╡ 00c435b7-899a-49c9-9c57-3e0024b71179
+timestep = @bind timestep Slider(1:length(time_sol_1d), show_value = true)
+
+# ╔═╡ c666ae1b-1146-46eb-aac1-c513ef87a3f4
+begin
+	
+	vis1d = GridVisualizer(Plotter = Plots, resolution=(1000, 1000), layout = (3, 1))
+
+	gridplot!(vis1d[1, 1], grid1d, title="1D grid", legend=:rt)
+	
+	scalarplot!(vis1d[2, 1], grid1d, time_sol_1d[1, :, timestep], limits=(0, 2), xlabel="x", title="Gas transport 1d at timestep : $timestep")
+	
+	scalarplot!(vis1d[3, 1], system1d, time_sol_1d, aspect = 6, title="Spacetime 1d gas transport", levels = 22)	
+
+	reveal(vis1d)
+end
+
+# ╔═╡ 3e0f1b81-27aa-4cd3-a07d-329b07add8b0
+begin 
+	plotMat = zeros(
+					length(time_sol_2d.t),length(time_sol_1d.u[1]),
+					length(time_sol_1d.u[1])
+					) #(192 , 41 , 41) for n=20
+		
+	for i in 1:length(time_sol_2d.t) #192   for n=20
+			s = 0
+		
+			for k in 1:length(time_sol_1d.u[1]) # 41
+	
+				for j in 1:length(time_sol_1d.u[1]) #41
+					
+					s = s+1
+					
+					plotMat[i, k , j] = time_sol_2d[i][s]
+				
+				end
+			
+			end
+	
+	end
+	
+	plotMat  #3D Matrix 
+end;
+
+# ╔═╡ ab96db7f-6bdc-40e4-b283-4638ab926423
+black = cgrad([:black,:black]); # Gradient to color surface plot
+
+# ╔═╡ a09ed607-04fd-49f8-8ab6-59fdfd301673
+md" ## 2D System"
+
+# ╔═╡ 7381062e-49cb-4807-9a53-2e27b4da52e2
+begin
+	vis2d_1 = GridVisualizer(Plotter = Plots)	
+	gridplot!(vis2d_1, grid2d, title="2D grid", legend=:rt, show = true)
+end
+
+# ╔═╡ 1e66c7e6-f02a-4b51-9760-a1770502fadc
+time_step = @bind time_step Slider(1:length(time_sol_2d), show_value = true)
+
+# ╔═╡ f186475b-7d52-40ae-8c77-127b4187e6da
+begin
+	
+	vis2d_2 = GridVisualizer(Plotter = Plots)
+	scalarplot!(vis2d_2, grid2d, time_sol_2d[1, :, time_step], xlabel="x", title="Gas transport 2d at timestep : $time_step", show = true, size = (600,600))
+
+end
+
+# ╔═╡ 527c20d5-65a1-4899-b81a-2f87c7f3bd50
+cgrad([:white,:black])
+
+# ╔═╡ e71ef56e-e354-4c93-8960-2934cd0c3fd1
+md" $t = t_0$ $\hspace{270px}$ t → $\hspace{270px}$ $t = t_{end}$ "
+
+# ╔═╡ 90c601de-e6e8-4e4c-8876-56a436a38fd4
+begin 
+	
+	plot(
+		plotMat[1,:,:], alpha = 0.1, st= :surface, c = black, label ="1", xlabel = "x",xticks = false , ylabel = "y", yticks = false, zlabel = "z", zticks = false, title = "Space-time 2D gas transport", legend = false, size = (500,500)
+		)
+	plot!(plotMat[50,:,:], alpha = 0.2, st= :surface, c = black, label ="50")
+	plot!(plotMat[100,:,:], alpha = 0.25, st = :surface, c = black, label = "100")
+	plot!(plotMat[150,:,:], alpha = 0.3, st = :surface, c = black, label = "150")
+	plot!(plotMat[170,:,:], alpha = 0.4, st = :surface, c = black, label = "170")
+	plot!(plotMat[180,:,:], alpha = 0.5, st= :surface, c = black, label ="50")
+
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -177,7 +227,7 @@ VoronoiFVM = "82b139dc-5afc-11e9-35da-9b9bdfd336f3"
 [compat]
 ExtendableGrids = "~0.9.5"
 GridVisualize = "~0.5.1"
-Plots = "~1.27.5"
+Plots = "~1.27.6"
 PlutoUI = "~0.7.38"
 VoronoiFVM = "~0.16.3"
 """
@@ -191,9 +241,9 @@ manifest_format = "2.0"
 
 [[deps.AbstractAlgebra]]
 deps = ["GroupsCore", "InteractiveUtils", "LinearAlgebra", "MacroTools", "Markdown", "Random", "RandomExtensions", "SparseArrays", "Test"]
-git-tree-sha1 = "1e357f8f7a732d7c92def7527431b41ec1857bec"
+git-tree-sha1 = "f4a6ecff7407a29d5d15503508144b7cc81bdc63"
 uuid = "c3fe647b-3220-5bb0-a1ea-a7954cac585d"
-version = "0.25.2"
+version = "0.25.3"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -983,9 +1033,9 @@ version = "0.12.3"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "621f4f3b4977325b9128d5fae7a8b4829a0c2222"
+git-tree-sha1 = "3b429f37de37f1fc603cc1de4a799dc7fbe4c0b6"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.2.4"
+version = "2.3.0"
 
 [[deps.Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1017,9 +1067,9 @@ version = "1.2.0"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "Unzip"]
-git-tree-sha1 = "88ee01b02fba3c771ac4dce0dfc4ecf0cb6fb772"
+git-tree-sha1 = "6f2dd1cf7a4bbf4f305a0d8750e351cb46dfbe80"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.27.5"
+version = "1.27.6"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -1045,9 +1095,9 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[deps.Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "ad368663a5e20dbb8d6dc2fddeefe4dae0781ae8"
+git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+0"
+version = "5.15.3+1"
 
 [[deps.QuadGK]]
 deps = ["DataStructures", "LinearAlgebra"]
@@ -1132,9 +1182,9 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [[deps.SciMLBase]]
 deps = ["ArrayInterface", "CommonSolve", "ConstructionBase", "Distributed", "DocStringExtensions", "IteratorInterfaceExtensions", "LinearAlgebra", "Logging", "RecipesBase", "RecursiveArrayTools", "StaticArrays", "Statistics", "Tables", "TreeViews"]
-git-tree-sha1 = "61159e034c4cb36b76ad2926bb5bf8c28cc2fb12"
+git-tree-sha1 = "f03796a588eba66f6bcc63cfdeda89b4a339ce4e"
 uuid = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
-version = "1.29.0"
+version = "1.30.0"
 
 [[deps.Scratch]]
 deps = ["Dates"]
@@ -1206,9 +1256,9 @@ version = "0.6.0"
 
 [[deps.StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
-git-tree-sha1 = "4f6ec5d99a28e1a749559ef7dd518663c5eca3d5"
+git-tree-sha1 = "cd56bf18ed715e8b09f06ef8c6b781e6cdc49911"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.4.3"
+version = "1.4.4"
 
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -1216,9 +1266,9 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[deps.StatsAPI]]
 deps = ["LinearAlgebra"]
-git-tree-sha1 = "8d7530a38dbd2c397be7ddd01a424e4f411dcc41"
+git-tree-sha1 = "c82aaa13b44ea00134f8c9c89819477bd3986ecd"
 uuid = "82ae8749-77ed-4fe6-ae5f-f523153014b0"
-version = "1.2.2"
+version = "1.3.0"
 
 [[deps.StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
@@ -1291,9 +1341,9 @@ version = "0.1.10"
 
 [[deps.TimerOutputs]]
 deps = ["ExprTools", "Printf"]
-git-tree-sha1 = "d60b0c96a16aaa42138d5d38ad386df672cb8bd8"
+git-tree-sha1 = "11db03dd5bbc0d2b57a570d228a0f34538c586b1"
 uuid = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
-version = "0.5.16"
+version = "0.5.17"
 
 [[deps.TranscodingStreams]]
 deps = ["Random", "Test"]
@@ -1581,20 +1631,24 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╟─0d4065fd-b411-4262-b355-920b3f5646d7
-# ╠═de2025b0-c0c7-11ec-20c7-9f6d75358794
-# ╟─ba5440f6-6691-4162-97b7-9c397172f827
-# ╠═f3ea86b7-4a1a-42be-ad35-d1a5d482aeea
-# ╟─ed411fc9-ac9a-4da3-aff2-154303b6455d
-# ╠═9914638b-3158-49c6-aa0f-078d4b85b481
-# ╠═a8eec904-e5bd-4f0d-837b-95b44bbcded8
-# ╠═a6879829-7c76-4c20-99f3-f28134b0ff19
-# ╟─a191fc26-6097-4eb3-9d8c-f3b75775f7b0
-# ╟─7bbc6b44-7f12-4676-b39a-4e9beab3791f
-# ╟─6f9298aa-6313-45e1-aafe-b67abeaacb81
-# ╟─62ce9cf8-39b3-4de1-a4c3-40f1b6ce59c0
-# ╠═517fd6f6-b02e-4960-b0b7-2bd8af4a3bbf
-# ╠═c5e7157c-c9cf-4960-b95a-754853db89a2
-# ╠═15003017-4a1a-4c4c-bab9-1f0defb78b86
+# ╟─cf19a6ee-c2f8-11ec-3c35-6f4d3e2bab43
+# ╟─8aae8386-06da-42a3-a6c3-9daba1e78769
+# ╟─364363a6-92b6-4927-890c-a73efe5cb022
+# ╟─11beb896-b7f4-4d5c-88e7-69cd24103314
+# ╟─f6424ae1-bace-4970-971c-e195ea70ba5a
+# ╟─1699dde6-f137-4d76-beb6-6d28457d49f6
+# ╠═f828e694-a2af-4e7e-9be9-ed858fdfad01
+# ╟─4bb2602f-b1ae-445d-9161-ef354b28aff5
+# ╟─00c435b7-899a-49c9-9c57-3e0024b71179
+# ╟─c666ae1b-1146-46eb-aac1-c513ef87a3f4
+# ╟─3e0f1b81-27aa-4cd3-a07d-329b07add8b0
+# ╟─ab96db7f-6bdc-40e4-b283-4638ab926423
+# ╟─a09ed607-04fd-49f8-8ab6-59fdfd301673
+# ╟─7381062e-49cb-4807-9a53-2e27b4da52e2
+# ╟─1e66c7e6-f02a-4b51-9760-a1770502fadc
+# ╟─f186475b-7d52-40ae-8c77-127b4187e6da
+# ╟─527c20d5-65a1-4899-b81a-2f87c7f3bd50
+# ╟─e71ef56e-e354-4c93-8960-2934cd0c3fd1
+# ╟─90c601de-e6e8-4e4c-8876-56a436a38fd4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
