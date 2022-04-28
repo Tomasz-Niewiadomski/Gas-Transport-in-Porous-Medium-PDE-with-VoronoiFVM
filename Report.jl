@@ -61,7 +61,7 @@ The exponent $m \in \mathbb{R}_{+}$
 
 
 
-- If $m>1$ it degenerates at $u=0$ and is called a _Slow Siffusion_ and creates free boundaries
+- If $m>1$ it degenerates at $u=0$ and is called a _Slow Diffusion_ and creates free boundaries
 - If $m=1$ we obtain the _classical Heat Equation_.
 - If $m<1$, the equation experiences singularity at $u=0$ and it is called _Fast Diffusion_
 
@@ -89,7 +89,7 @@ $[v(t)w(x)]_t = \Delta[v^m (t) w^m (x)]$
 
 $v'(t)w(x) = v^m(t) \Delta[w^m (x)]$
 
-$\frac{v'(t)}{v^m(t)}=\frac{\Delta [w^m(x)]}{w(x)} = \lambda$
+$\frac{v'(t)}{v^m(t)}=\frac{\Delta [w^m(x)]}{w(x)} =  \lambda$
 
 2) Compute : $v(t)$
 
@@ -180,8 +180,11 @@ The Barenblatt function is a useful test case for determining the validity of th
 "
 #The fact that the profiles are parabolas for $m=2$ indicates that they are a strong solution of the parabolic differential equation problem"
 
+# ╔═╡ cda86f5e-700c-46d5-8fe6-7e05e35c8bd4
+md"# Finite volume space discretisation 📐"
+
 # ╔═╡ b4c8ddaa-f7b8-481b-99be-678b50af4f55
-md"# Time discretisation"
+md"# Time discretisation ⏰"
 
 # ╔═╡ 1a2be55e-a7ad-480c-82e0-744cae76e88d
 proposition" __Time discretisation options:__
@@ -195,9 +198,9 @@ md"""
 - __Time discretisation procedure__ :
 
   - choose $0=t_0 < t_1 < \dots < t_N = T$
-  - define $\tau _N ≝ t_n - t_{n-1}$
+  - define $\tau _n ≝ t_n - t_{n-1}$
 
-$u^\theta ≝ \theta u_n + (1-\theta)u_{n-1}$
+$u_\theta ≝ \theta u_n + (1-\theta)u_{n-1}$
 
 For n = 1...N, solve
 
@@ -210,9 +213,9 @@ $D\nabla u_\theta \cdot \vec{n} + \alpha u_\theta = g \space on \space \partial 
 # ╔═╡ 2b45a814-46d6-48a8-acef-a42cfa30afc8
 proposition"""
 - __Method accuracy__:
-  - Forward _explicit_ Euler method: $\theta=1\Rightarrow$ Solve PDE problem in each timestep. First order accuracy in time.
+  - Backward _implicit_ Euler method: $\theta=1\Rightarrow$ Solve PDE problem in each timestep. First order accuracy in time.
 
-  - Backward _implicit_ Euler method: $\theta=0\Rightarrow$ Solve PDE problem in each timestep. Second order accuracy in time.
+  - Forward _explicit_ Euler method: $\theta=0\Rightarrow$ Solve PDE problem in each timestep. Second order accuracy in time.
 
   - Crank-Nicolson: $\theta = \frac{1}{2} \Rightarrow$ First order accurate in time. Doesn't involve the solution of a PDE problem $\rightarrow$ _cheap_ ? 
 """
@@ -220,8 +223,8 @@ proposition"""
 # ╔═╡ a61ee228-b20e-49d0-8647-89aab0674101
 proposition"
 - __Method stability__:
-  - Forward _explicit_ Euler method: $\theta=1\Rightarrow$ unconditional stability!
-  - Backward _implicit_ Euler method: $\theta=0\Rightarrow$ CFL condition $\tau \leq Ch^2$
+  - Backward _implicit_ Euler method: $\theta=1\Rightarrow$ unconditional stability!
+  - Forward _explicit_ Euler method: $\theta=0\Rightarrow$ CFL condition $\tau \leq Ch^2$
   - Crank-Nicolson: $\theta = \frac{1}{2} \Rightarrow$ CFL condition $\tau \leq 2Ch^2$
 "
 
@@ -238,6 +241,38 @@ md"
 	  the CFL is easier to fulfill, thus in this case explicit 
 	  computations are  mostly preferred
 "
+
+# ╔═╡ bbbfcde8-65fe-49ee-aa3d-a75f52dbd756
+md"# Simulation results 👨🏽‍💻"
+
+# ╔═╡ 5c7aabc3-2a1f-4d0e-b09e-56293ab2d15e
+md"## Implementation of VoronoiFVM"
+
+# ╔═╡ 762f4ab4-a25b-40ed-a60b-eb096cbe15ba
+md"## Space-time domain solution"
+
+# ╔═╡ 44fa473e-306c-4e53-8a5f-fdcd0b985ec1
+md"### 1 dimensional case "
+
+# ╔═╡ 44187ce4-72dc-47db-82b2-1e39c6877a09
+md"#### Solution"
+
+# ╔═╡ e095d0f5-87e8-4461-af50-59307e17874f
+md"### 2 dimensional case"
+
+# ╔═╡ 6a5c5ad7-b16b-4848-9fcd-1a3927896ed9
+md"## DifferentialEquations.jl comparison "
+
+# ╔═╡ cfabd7d6-7ba0-42a2-ae61-8381bb22a784
+md"#### That's how you embed a picture $\downarrow$  
+
+We need to make the git repository public if we want to link the images this way"
+
+# ╔═╡ 157c22f8-f751-4c59-995c-b1ebbe4fcd93
+error_diffeq_2d = "https://github.com/bpatrik/pigallery2/blob/master/demo/images/IMG_1252.jpg?raw=true"
+
+# ╔═╡ fff246f5-1e41-456d-a0b3-e0458091e87d
+md"$(Resource(error_diffeq_2d))"
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1171,11 +1206,22 @@ version = "0.9.1+5"
 # ╟─6de33253-fcea-4e5a-bb2b-9115e0a46ad2
 # ╟─f7d7dfc5-ee9c-4b64-ae96-f58ee410acc1
 # ╟─cf0383b2-292d-4c9a-a375-3b6a86f4b9f2
+# ╟─cda86f5e-700c-46d5-8fe6-7e05e35c8bd4
 # ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
 # ╟─1a2be55e-a7ad-480c-82e0-744cae76e88d
 # ╟─c68a801c-8b4f-4537-94d8-71f52885ece4
 # ╟─2b45a814-46d6-48a8-acef-a42cfa30afc8
 # ╟─a61ee228-b20e-49d0-8647-89aab0674101
 # ╟─c938c461-5005-449e-a1e7-0067bb4421b2
+# ╟─bbbfcde8-65fe-49ee-aa3d-a75f52dbd756
+# ╟─5c7aabc3-2a1f-4d0e-b09e-56293ab2d15e
+# ╟─762f4ab4-a25b-40ed-a60b-eb096cbe15ba
+# ╟─44fa473e-306c-4e53-8a5f-fdcd0b985ec1
+# ╟─44187ce4-72dc-47db-82b2-1e39c6877a09
+# ╟─e095d0f5-87e8-4461-af50-59307e17874f
+# ╟─6a5c5ad7-b16b-4848-9fcd-1a3927896ed9
+# ╟─cfabd7d6-7ba0-42a2-ae61-8381bb22a784
+# ╟─157c22f8-f751-4c59-995c-b1ebbe4fcd93
+# ╠═fff246f5-1e41-456d-a0b3-e0458091e87d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
