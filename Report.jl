@@ -159,7 +159,7 @@ end;
 # ╔═╡ f7d7dfc5-ee9c-4b64-ae96-f58ee410acc1
 begin
 	X_coordinate = -2.5:.01:2.5
-	line_width = 2.5
+	line_width = 3.
 	line_colour = "#ccccff"
 	
 	plot(X_coordinate,barenblatt.(X_coordinate,0.01), title = "Barenblatt profiles in 1D", legend = false, xticks = false, yticks = false, grid = false, colour = line_colour, lw = line_width, showaxis = :xy, framestyle = :zerolines)
@@ -210,7 +210,7 @@ The Barenblatt function is a useful test case for determining the validity of th
 md"# [EMPTY] Finite volume space discretisation 📐"
 
 # ╔═╡ b4c8ddaa-f7b8-481b-99be-678b50af4f55
-md"# [EMPTY] Time discretisation ⏰"
+md"# Time discretisation ⏰"
 
 # ╔═╡ 1a2be55e-a7ad-480c-82e0-744cae76e88d
 proposition" __Time discretisation options:__
@@ -223,49 +223,52 @@ proposition" __Time discretisation options:__
 md"""
 - __Time discretisation procedure__ :
 
-  - choose $0=t_0 < t_1 < \dots < t_N = T$
+  - choose $t_0 < t_1 < \dots < t_N = t_{end}$
   - define $\tau _n ≝ t_n - t_{n-1}$
+  -  in our case :
 
 $u_\theta ≝ \theta u_n + (1-\theta)u_{n-1}$
 
 For n = 1...N, solve
 
-$\frac{u_n - u_{n-1}}{\tau_n}-\nabla \cdot D \nabla u_\theta = f \space in \space \Omega \times [0,T]$
-
-$D\nabla u_\theta \cdot \vec{n} + \alpha u_\theta = g \space on \space \partial \Omega \times [0,T]$
+$\frac{u_n - u_{n-1}}{\tau_n}-\Delta u_\theta^m = 0 \space \space \space in \space \Omega \times [t_0,t_{end}]$ where $\Omega = [-L,L]$
 
 """
 
-# ╔═╡ 2b45a814-46d6-48a8-acef-a42cfa30afc8
-proposition"""
-- __Method accuracy__:
-  - Backward _implicit_ Euler method: $\theta=1\Rightarrow$ Solve PDE problem in each timestep. First order accuracy in time.
+# ╔═╡ 5089e81d-97e8-4512-b9e3-b147638f7bf4
+md" #### Time-discritesation methods comparison :
 
-  - Forward _explicit_ Euler method: $\theta=0\Rightarrow$ Solve PDE problem in each timestep. Second order accuracy in time.
-
-  - Crank-Nicolson: $\theta = \frac{1}{2} \Rightarrow$ First order accurate in time. Doesn't involve the solution of a PDE problem $\rightarrow$ _cheap_ ? 
-"""
-
-# ╔═╡ a61ee228-b20e-49d0-8647-89aab0674101
-proposition"
-- __Method stability__:
-  - Backward _implicit_ Euler method: $\theta=1\Rightarrow$ unconditional stability!
-  - Forward _explicit_ Euler method: $\theta=0\Rightarrow$ CFL condition $\tau \leq Ch^2$
-  - Crank-Nicolson: $\theta = \frac{1}{2} \Rightarrow$ CFL condition $\tau \leq 2Ch^2$
+| Method :| $\theta :$ | Accuracy : | Stability condition :
+|:---------- | ---------- |------------|:------------:|
+| __Backward__ `implicit` Euler  | $1$ |$\mathscr{O}(t)$   |_unconditional_|
+| __Forward__ `explicit` Euler   | $0$  | $\mathscr{O}(t^2)$ |$\tau \leq Ch^2$ |
+| __Crank-Nicolson__    | $\frac{1}{2}$  | $\mathscr{O}(t)$   |$\tau \leq 2Ch^2$|
 "
 
 # ╔═╡ c938c461-5005-449e-a1e7-0067bb4421b2
 md"
+    - Implicit (backward) Euler method can be applied in unstable 
+	  systems (that result in stiff matrices)  due to unconditional stability
+      of the method. In order to maintain time-accuracy one needs to choose
+      the time steps sufficiently small enough due to first order time accuracy.
+      Time accuracy as a result of this method suffers more.
+"
 
-	- Explicit (forward) Euler method can be applied on very fast systems (GPU),
-      with small time step comes a high accuracy in time.
+# ╔═╡ 036054a9-57e3-4b32-9f82-b3db93734bfe
+md"
+    - Explicit (forward) Euler method can be used when time accuracy is
+	  of high importance, as for a small timestep we obtain a very time 
+      accurate system. One should be wary of the stability conditon having
+      to be fullflied. A tight control of this condition is computatioanlly 
+      costly thus it requires a fast system.
+"
 
-	- Implicit Euler: unconditional stability – helpful when stability
-	  is of utmost importance, and accuracy in time is less important
+# ╔═╡ dba97448-0a74-45fe-acf5-2c9f0dccbcac
+md"
 
-	- For hyperbolic systems (pure convection without diffusion),
-	  the CFL is easier to fulfill, thus in this case explicit 
-	  computations are  mostly preferred
+	- Different PDE problems/systems are characterised by different
+      stability conditions, and on top of that come computer sysetm 
+      limitations thus a time-discretisation choice is of high importance.
 "
 
 # ╔═╡ 641a9ba4-af2e-4fbd-be28-24bd5100fad3
@@ -1246,9 +1249,10 @@ version = "0.9.1+5"
 # ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
 # ╟─1a2be55e-a7ad-480c-82e0-744cae76e88d
 # ╟─c68a801c-8b4f-4537-94d8-71f52885ece4
-# ╟─2b45a814-46d6-48a8-acef-a42cfa30afc8
-# ╟─a61ee228-b20e-49d0-8647-89aab0674101
+# ╟─5089e81d-97e8-4512-b9e3-b147638f7bf4
 # ╟─c938c461-5005-449e-a1e7-0067bb4421b2
+# ╟─036054a9-57e3-4b32-9f82-b3db93734bfe
+# ╟─dba97448-0a74-45fe-acf5-2c9f0dccbcac
 # ╟─641a9ba4-af2e-4fbd-be28-24bd5100fad3
 # ╟─bbbfcde8-65fe-49ee-aa3d-a75f52dbd756
 # ╟─67d6ac69-f3b3-4f5f-ba24-2ddaead90f42
