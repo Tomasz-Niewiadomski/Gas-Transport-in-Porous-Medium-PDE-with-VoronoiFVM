@@ -207,7 +207,69 @@ The Barenblatt function is a useful test case for determining the validity of th
 #The fact that the profiles are parabolas for $m=2$ indicates that they are a strong solution of the parabolic differential equation problem"
 
 # ╔═╡ cda86f5e-700c-46d5-8fe6-7e05e35c8bd4
-md"# [EMPTY] Finite volume space discretisation 📐"
+md"# [IN PROGRESS] Finite volume space discretisation 📐"
+
+# ╔═╡ 1f644a7e-6bb5-44b2-8b1d-b39a18111ba4
+md"## Generating discretisation grids"
+
+# ╔═╡ bcdce42b-f6e5-4269-a95e-6e9edfb63d43
+proposition"
+__Idea__ :
+ - Divide the domain into finite number of _finite volumes_ $\omega_k$
+ - To each volume $\omega_k$ assign one value $u_k = u(\vec{x_k})$ - ($u$ at a _collocation point_ $\vec{x_k}$)
+ - Approximate $\vec{\nabla} u$
+"
+
+# ╔═╡ 560701d1-9ad8-4368-803e-17f72a18b761
+md" 
+ - Define: 
+   - __Domain__ ≝ $\Omega \subset \mathbb{R}^d$
+   - __Border of the domain__ ≝ $\partial \Omega$ - composed of union of planar parts $\Rightarrow \partial \Omega =  \cup_{m} \Gamma _m$
+   - __Finite volumes__ ≝ $\omega_k$ - non intersecting open sets, $\bar{\omega_k}$ ≝ closure  
+   - __Common bounds__ ≝ $\sigma_{kl} = \bar{\omega_k} \cap \bar{\omega_l}$
+   $
+   \sigma_{kl} \begin{cases} 
+         = 0 & \Rightarrow \omega_k, \omega_l ≝ \space 'non\space neighbours' \\
+         \neq 0 & \sigma_{kl} ≝ point/line \Rightarrow \omega_k, \omega_l ≝  \space    '\space neighbours'\\
+      \end{cases}$
+
+   - __Collocation point__ ≝ $\vec{x_k}\in \bar{\omega_k}$
+
+"
+
+# ╔═╡ 1ce3c86b-23c9-4687-b5c8-28f383eb5a82
+md"
+ - Collocation point rules :
+
+   - if $\omega_k , \omega_l$ are neighbours $\Rightarrow$ line $\vec{x_k}\vec{x_l}\perp \sigma_{kl}$
+   - if $\partial \omega_k \cap \partial \Omega \neq 0 \Rightarrow \vec{x_k} \in \partial \Omega$
+"
+
+
+# ╔═╡ b80011bf-dfe2-4044-b874-418c01398317
+md"
+- Approximate $\vec{\nabla}u\cdot \vec{n_{kl}} \approx \frac{u(\vec{x_k})-u(\vec{x_l})}{|\vec{x_k}-\vec{x_l}|}$
+"
+
+# ╔═╡ f536b466-2783-4099-bb75-ce35945ed71f
+md"
+For a __1D interval__ $\Omega = (a,b)$, we define _finite volumes_ by :
+
+$
+\omega_{k} = \begin{cases} 
+(x_1,\frac{x_1+x_2}{2}), & k = 1 \\
+(\frac{x_{k-1}+x_{k}}{2},\frac{x_{k}+x_{k+1}}{2}), & 1<k<n\\
+(\frac{x_{n-1}+x_{n}}{2},x_n), & k=n\\
+\end{cases}$
+
+where $x_1=a<x2<\dots <x_{n-1} < x_n =b$
+"
+
+# ╔═╡ 9606acd1-d1df-4668-81ba-ef8894133ac6
+md"For a __generic 2D domain__ we use Delunay triangulation method to obtain collocation points $\vec{x_k}$ at the triangle vertices. Using Voronoi cells, we define our _finite volumes_ with $\vec{x_k} \in \omega_k$"
+
+# ╔═╡ 721e0c47-89a8-49db-8f90-87aab8b48e5f
+md"## Assemble S.O.L.E for FVM into matrices"
 
 # ╔═╡ b4c8ddaa-f7b8-481b-99be-678b50af4f55
 md"# Time discretisation ⏰"
@@ -242,7 +304,7 @@ md" #### Time-discritesation methods comparison :
 |:---------- | ---------- |------------|:------------:|
 | __Backward__ `implicit` Euler  | $1$ |$\mathscr{O}(t)$   |_unconditional_|
 | __Forward__ `explicit` Euler   | $0$  | $\mathscr{O}(t^2)$ |$\tau \leq Ch^2$ |
-| __Crank-Nicolson__    | $\frac{1}{2}$  | $\mathscr{O}(t)$   |$\tau \leq 2Ch^2$|
+| __Crank-Nicolson__    | $\frac{1}{2}$  | $\mathscr{O}(t)$ |$\tau \leq 2Ch^2$|
 "
 
 # ╔═╡ c938c461-5005-449e-a1e7-0067bb4421b2
@@ -1246,6 +1308,14 @@ version = "0.9.1+5"
 # ╟─9ca00af5-8d50-4bea-9d7b-c9559879ed94
 # ╟─cf0383b2-292d-4c9a-a375-3b6a86f4b9f2
 # ╟─cda86f5e-700c-46d5-8fe6-7e05e35c8bd4
+# ╟─1f644a7e-6bb5-44b2-8b1d-b39a18111ba4
+# ╟─bcdce42b-f6e5-4269-a95e-6e9edfb63d43
+# ╟─560701d1-9ad8-4368-803e-17f72a18b761
+# ╟─1ce3c86b-23c9-4687-b5c8-28f383eb5a82
+# ╟─b80011bf-dfe2-4044-b874-418c01398317
+# ╟─f536b466-2783-4099-bb75-ce35945ed71f
+# ╟─9606acd1-d1df-4668-81ba-ef8894133ac6
+# ╟─721e0c47-89a8-49db-8f90-87aab8b48e5f
 # ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
 # ╟─1a2be55e-a7ad-480c-82e0-744cae76e88d
 # ╟─c68a801c-8b4f-4537-94d8-71f52885ece4
