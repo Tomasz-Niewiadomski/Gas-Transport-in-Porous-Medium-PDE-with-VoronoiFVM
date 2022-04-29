@@ -24,6 +24,8 @@ begin
 	#using PlutoVista
 	using Plots
 	using DifferentialEquations
+
+	TableOfContents(title="")
 end
 
 # ╔═╡ 8aae8386-06da-42a3-a6c3-9daba1e78769
