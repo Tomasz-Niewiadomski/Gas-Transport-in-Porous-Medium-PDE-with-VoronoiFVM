@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.18.4
+# v0.19.2
 
 using Markdown
 using InteractiveUtils
@@ -46,7 +46,7 @@ function create_grid(grid_points, dimensions)
 end
 
 # ╔═╡ f6424ae1-bace-4970-971c-e195ea70ba5a
-function create_system(grid; m = 2, unknown_storage = :sparse)
+function create_system(grid; m=2, unknown_storage=:sparse)
 	
 	physics = VoronoiFVM.Physics(
                                 flux = function(f, u, edge)
@@ -58,13 +58,13 @@ function create_system(grid; m = 2, unknown_storage = :sparse)
                                           end
                                 )
 
-    system = VoronoiFVM.System(grid, physics, unknown_storage = unknown_storage)
+    system = VoronoiFVM.System(grid, physics, unknown_storage=unknown_storage)
 
 	return system
 end
 
 # ╔═╡ 1699dde6-f137-4d76-beb6-6d28457d49f6
-function solve_system_vFVM(grid, system; t0 = 0.001, tstep = 1e-5 , tend = 0.01)
+function solve_system_vFVM(grid, system; t0=0.001, tstep=1e-5, tend=0.01)
 	
 	enable_species!(system, 1, [1])
 	
@@ -97,7 +97,7 @@ function solve_system_vFVM(grid, system; t0 = 0.001, tstep = 1e-5 , tend = 0.01)
 
 	# control ------------------------------
 	control = VoronoiFVM.SolverControl()
-	control.Δt_min = tstep *0.01 # for larger nx tstep < 0.001 now(tstep=0.0001)
+	control.Δt_min = tstep*0.01 # for larger nx tstep < 0.001 now(tstep=0.0001)
 	control.Δt = tstep
 	control.Δt_max = 0.1*tend
 	control.Δu_opt = 0.005 #0.05
@@ -115,14 +115,14 @@ function solve_system_vFVM(grid, system; t0 = 0.001, tstep = 1e-5 , tend = 0.01)
 end
 
 # ╔═╡ 4fcee367-3b60-4d8f-bef4-e38f23cebbed
-function create_error_array(method, dim, limit, step = 5)
+function create_error_array(method, dim, limit, step=5)
     error_array = []
     for i in collect(10:step:limit)
-        grid = create_grid(i,dim)
+        grid = create_grid(i, dim)
         system = create_system(grid)
-        _, error = method(grid,system)
+        _, error = method(grid, system)
 
-        push!(error_array,error)
+        push!(error_array, error)
     end
     return error_array
 end
@@ -132,7 +132,6 @@ md"## Solving the system"
 
 # ╔═╡ f828e694-a2af-4e7e-9be9-ed858fdfad01
 begin
-	# addprocs(1)
 	grid_points = 40
 	
 	grid_1d = create_grid(grid_points, 1) 
@@ -190,19 +189,25 @@ end"""# Attempt at plotting the history, but I think there's no point;
 
 # ╔═╡ e8c8c55e-0afd-48d6-bc51-bdf65ea2efbe
 begin
-	error_array_1d = create_error_array(solve_system_vFVM,1,200)
+	error_array_1d = create_error_array(solve_system_vFVM, 1, 200)
 end;
 
 # ╔═╡ 40bcd56d-73bb-492e-a05b-9853b380b741
 md"## Analysis of the results"
 
 # ╔═╡ 97bb105a-1154-458c-8331-05a83bb8afa4
-error_array_2d = create_error_array(2,40) # Very big boi
+error_array_2d = create_error_array(solve_system_vFVM, 2, 40) # Very big boi
 
 # ╔═╡ 59ef82c3-4657-4b86-b8ed-b8bd4514030f
 begin
-	error_plot_vfvm_1d = scatter(10:5:200,error_array_1d, title = "Error : 1D VoronoiFVM.jl" , xlabel ="Number of gridpoints", ylabel = "Error value", legend = false, color = "#ccccff", xrotation = 30, guidefontsize = 7)
-	error_plot_vfvm_1d = plot!(10:5:200, error_array_1d, color = "#ccccff")
+	error_plot_vfvm_1d = scatter(
+		10:5:200, error_array_1d, 
+		title = "Error : 1D VoronoiFVM.jl",
+		xlabel = "Number of gridpoints", ylabel = "Error value", 
+		legend = false, color = "#ccccff", 
+		xrotation = 30, guidefontsize = 7
+	)
+	error_plot_vfvm_1d = plot!(10:5:200, error_array_1d, color="#ccccff")
 
 	#error_plot_vfvm_2d = scatter(10:5:40,error_array_2d, title = "Error : 2D VoronoiFVM.jl" , xlabel ="Number of gridpoints", ylabel = "Error value", legend = false, color = "#ccccff", xrotation = 30, guidefontsize = 7)
 	#error_plot_vfvm_2d = plot!(10:5:40, error_array_2d, color = "#ccccff")
@@ -227,9 +232,13 @@ begin
 
 	gridplot!(vis1d[1, 1], grid_1d, title="1D grid")
 	
-	scalarplot!(vis1d[2, 1], grid_1d, time_sol_1d[1, :, timestep], limits=(0, 2), title="Gas transport 1d at timestep : $timestep")
+	scalarplot!(vis1d[2, 1], grid_1d, time_sol_1d[1, :, timestep], limits=(0, 2), 
+		title="Gas transport 1d at timestep: $timestep"
+	)
 	
-	scalarplot!(vis1d[3, 1], system_1d, time_sol_1d, aspect=61, title="Spacetime 1d gas transport")	
+	scalarplot!(vis1d[3, 1], system_1d, time_sol_1d, aspect=61, 
+		title="Spacetime 1d gas transport"
+	)	
 
 	reveal(vis1d)
 end
@@ -269,8 +278,8 @@ md" ## 2D System"
 
 # ╔═╡ 7381062e-49cb-4807-9a53-2e27b4da52e2
 """begin
-	vis2d_1 = GridVisualizer(Plotter = Plots)	
-	gridplot!(vis2d_1, grid_2d, title="2D grid", legend=:rt, show = true)
+	vis2d_1 = GridVisualizer(Plotter=Plots)	
+	gridplot!(vis2d_1, grid_2d, title="2D grid", legend=:rt, show=true)
 end""" # It took me 17 minutes to run this, so I desable it as default
 
 # ╔═╡ 1e66c7e6-f02a-4b51-9760-a1770502fadc
@@ -323,9 +332,9 @@ md"## Comparison with DifferentialEquations.jl"
 md"### System preparation with DifferentialEquations "
 
 # ╔═╡ 2d9b2f03-72a5-47b6-adb3-3ce75c485bd9
-function solve_system_diffeq(grid, system; t0 = 0.001, tend = 0.01)
+function solve_system_diffeq(grid, system; t0=0.001, tend=0.01)
 
-	function barenblatt_iniv(coordinates...; t = t0, M = 2)
+	function barenblatt_iniv(coordinates...; t=t0, M=2)
 		Γ = 0.2
 		dimensions = length(coordinates)
 		α = 1.0 /(M - 1.0 + 2.0/dimensions)
@@ -336,7 +345,7 @@ function solve_system_diffeq(grid, system; t0 = 0.001, tend = 0.01)
 		return z
 	end
 
-	function barenblatt_endv(coordinates...; t = tend, M = 2)
+	function barenblatt_endv(coordinates...; t=tend, M=2)
 		Γ = 0.2
 		dimensions = length(coordinates)
 		α = 1.0 /(M - 1.0 + 2.0/dimensions)
@@ -365,21 +374,31 @@ end
 md"### Solving the system"
 
 # ╔═╡ 2c2d2cb1-9c0d-451d-a7ce-17d022ecb0e3
-error_array_diffeq_1d = create_error_array(solve_system_diffeq,1,200);
+error_array_diffeq_1d = create_error_array(solve_system_diffeq, 1, 200);
 
 # ╔═╡ b31fe746-0c6a-429b-91ee-7249e515609d
 begin
-	error_plot_diffeq_1d = scatter(10:5:200,error_array_diffeq_1d, title = "Error : 1D DifferentialEquations.jl" , xlabel ="Number of gridpoints", ylabel = "Error value", legend = false, color = "#DFAFBC", xrotation = 30, guidefontsize = 7, dpi = 500)
+	error_plot_diffeq_1d = scatter(10:5:200, error_array_diffeq_1d, 
+		title = "Error : 1D DifferentialEquations.jl", 
+		xlabel ="Number of gridpoints", ylabel = "Error value", 
+		legend = false, color = "#DFAFBC", 
+		xrotation = 30, guidefontsize = 7, dpi = 500
+	)
 	error_plot_diffeq_1d = plot!(10:5:200, error_array_diffeq_1d, color = "#DFAFBC")
 end
 
 # ╔═╡ 73241ed5-8730-496a-add1-65225e52193d
 begin
-	scatter(10:5:200,error_array_diffeq_1d, xlabel ="Number of gridpoints", ylabel = "Error value", color = "#DFAFBC", xrotation = 30, guidefontsize = 7, label = "DifferentialEquations.jl", title = "1D Error comparison", dpi = 500)
-	plot!(10:5:200, error_array_diffeq_1d, color = "#DFAFBC", label = false)
+	scatter(10:5:200, error_array_diffeq_1d, 
+		title = "1D Error comparison",
+		xlabel ="Number of gridpoints", ylabel = "Error value", 
+		color = "#DFAFBC", xrotation = 30, guidefontsize = 7, 
+		label = "DifferentialEquations.jl", dpi = 500
+	)
+	plot!(10:5:200, error_array_diffeq_1d, color="#DFAFBC", label=false)
 	
-	scatter!(10:5:200,error_array_1d, color = "#ccccff", label = "VoronoiFVM.jl")
-	plot!(10:5:200, error_array_1d, color = "#ccccff", label = false)
+	scatter!(10:5:200, error_array_1d, color="#ccccff", label="VoronoiFVM.jl")
+	plot!(10:5:200, error_array_1d, color="#ccccff", label=false)
 end
 	
 
