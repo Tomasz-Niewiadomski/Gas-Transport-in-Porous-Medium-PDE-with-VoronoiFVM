@@ -247,8 +247,8 @@ md" #### Time-discritesation methods comparison :
 
 # ╔═╡ c938c461-5005-449e-a1e7-0067bb4421b2
 md"
-    - Implicit (backward) Euler method can be applied in unstable 
-	  systems (that result in stiff matrices)  due to unconditional stability
+      	Implicit (backward) Euler method can be applied in unstable 
+	  systems (that result in stiff matrices) due to unconditional stability
       of the method. In order to maintain time-accuracy one needs to choose
       the time steps sufficiently small enough due to first order time accuracy.
       Time accuracy as a result of this method suffers more.
@@ -256,7 +256,7 @@ md"
 
 # ╔═╡ 036054a9-57e3-4b32-9f82-b3db93734bfe
 md"
-    - Explicit (forward) Euler method can be used when time accuracy is
+      	Explicit (forward) Euler method can be used when time accuracy is
 	  of high importance, as for a small timestep we obtain a very time 
       accurate system. One should be wary of the stability conditon having
       to be fullflied. A tight control of this condition is computatioanlly 
@@ -266,7 +266,7 @@ md"
 # ╔═╡ dba97448-0a74-45fe-acf5-2c9f0dccbcac
 md"
 
-	- Different PDE problems/systems are characterised by different
+	  	Different PDE problems/systems are characterised by different
       stability conditions, and on top of that come computer sysetm 
       limitations thus a time-discretisation choice is of high importance.
 "
@@ -1264,7 +1264,7 @@ version = "0.9.1+5"
 # ╟─e095d0f5-87e8-4461-af50-59307e17874f
 # ╟─6a5c5ad7-b16b-4848-9fcd-1a3927896ed9
 # ╟─cfabd7d6-7ba0-42a2-ae61-8381bb22a784
-# ╟─157c22f8-f751-4c59-995c-b1ebbe4fcd93
-# ╟─fff246f5-1e41-456d-a0b3-e0458091e87d
+# ╠═157c22f8-f751-4c59-995c-b1ebbe4fcd93
+# ╠═fff246f5-1e41-456d-a0b3-e0458091e87d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
