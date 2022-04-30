@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.18.4
+# v0.19.3
 
 using Markdown
 using InteractiveUtils
@@ -273,15 +273,15 @@ md"Shashanks stuff $\downarrow$"
 
 # ╔═╡ a29532c0-03f3-4daa-8636-ef6c87630558
 md"""
-- __Forward__ approximation 
+- __Forward__ approximation  | Truncation Error 1st order
 
 $\frac{\partial u}{\partial \:x}\:\approx\:\frac{u_{i+1}\:-\:u_i}{\Delta x}$
 
-- __Backward__ approximation 
+- __Backward__ approximation | Truncation Error 1st order
 
 $\frac{\partial u}{\partial \:x}\:\approx\:\frac{u_i\:-\:u_{i-1}}{\Delta x}$
 
-- __Central__ approximation 
+- __Central__ approximation  | Truncation Error 2nd order
 
 $\frac{\partial u}{\partial \:x}\:\approx\:\frac{u_{i+1}\:-\:u_{i-1}}{\Delta x}$
 """
@@ -292,7 +292,7 @@ md"""##### Accuracy of these approximations :"""
 # ╔═╡ 8569a570-01ba-4084-be9b-d87555396e9c
 md"""
 
-Evaluating the accuracy for _Forward_ approximation.
+Example evaluation for the accuracy for _Forward_ approximation.
 
 $\frac{\partial u}{\partial \:x}\:\approx \:\frac{u_{i+1}\:-\:u_i}{\Delta x}\:-\:\left\{\frac{\Delta \:x}{2}\cdot \:\frac{\partial \:^2\:u}{\partial \:\:\:x^2}\right\}^i\:\:-\:\left\{\frac{\Delta \:\:x^2}{3!}\cdot \:\:\frac{\partial \:\:^3\:u}{\partial \:\:\:\:x^3}\right\}^i\: ...$
 
@@ -312,13 +312,6 @@ _Central_ approximation is essentially the addition of _forward_ & _backward_ ap
 For the _central_ difference approximation, the truncation error is $\:\approx O\left(\Delta x^2\right)$
 
 """
-
-# ╔═╡ 6cd29b4d-fe43-49b2-ad9b-271b70820e3a
-md" __Order of accuracy__ ≝ The power of $\Delta x$ with which the truncation error tends to $0$
-
-- Forward & Backward approximation are $O(\Delta x)$ accurate.
-
-"
 
 # ╔═╡ e17731ae-984a-443a-b377-50301e01c3e3
 md"## Implicit Euler for Porous Medium discretisation"
@@ -340,6 +333,11 @@ Implicit Euler time step
 
 Using the _Backward_ difference for time steps to evaluate the equation :
 
+Simplistic representation
+
+
+
+
 $$\frac{\:u_x^{t+1}-u^t_x}{\Delta t\:}\:=\frac{\left(u^m\right)_{x+1}^{t+1}\:-2\cdot \left(u^m\right)_x^{t+1}+\left(u^m\right)_{x-1}^{t+1}\:\:}{\Delta x^2}$$
 
 Super-scripts ≝ time-steps 
@@ -350,7 +348,7 @@ Sub-scripts ≝ spatial-steps
 """
 
 # ╔═╡ 21dd4a3a-dd1c-40e5-8b5b-9a6c3fc3ae99
-md"Implicit Euler method stencil diagram  1d $\downarrow$"
+md"Implicit Euler method stencil diagram  1D $\downarrow$"
 
 # ╔═╡ d5d00a19-f23e-4444-9554-6dc530743fa7
 begin
@@ -360,7 +358,7 @@ end
 
 # ╔═╡ 6f2e916d-f270-4e1a-9d9f-f13f17051fdd
 md"
-At one step calculation needs 2 unknowns from current time-step and 1 unknown from previous time-step. Hence we couple these unknows with other equations in the grid by writing the formula for all the grid points. Eventually this results in a tridiagonal matrix.
+At one step calculation needs 2 unknowns from current time-step and 1 unknown from previous time-step. Hence we couple these unknows with other equations in the grid by writing the formula for all the grid points. Eventually this results in a tridiagonal coefficient matrix.
 
 $$\begin{pmatrix}\frac{-1}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&0&.&.&\\ \frac{1}{\Delta x^2}&\frac{-2}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&.&&\\ 0&.&\frac{-2}{\Delta \:\:x^2}&.&.&&\\ .&.&.&.&.&&\\ .&.&.&.&.&&\\ &&&&&&\\ &&&&&&\end{pmatrix}$$
 
@@ -370,8 +368,50 @@ Since we are using the implicit time-steps, each time-step can then be solved li
 # ╔═╡ def425b2-4624-4161-9491-f5b2e625fa83
 md"### 2 dimensional case"
 
+# ╔═╡ 70e1196a-5280-4c19-a5e6-f675bc2de23c
+md"""
+
+$\frac{\partial u}{\partial \:t}=\left(\frac{\partial ^2\:u^m}{\partial \:\:x^2}\:+\:\frac{\partial ^2\:u^m}{\partial \:\:y^2}\right)$
+
+__Implicit Euler for 2D - Porous Medium discretisation__
+
+Simplistic representation
+
+$\frac{\:u_{i,j}^{t+1}-u^t_{i,j}}{\Delta \:t\:}\:=\frac{\left(u^m\right)_{i+1,\:j}^{t+1}\:-2\cdot \:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i-1,\:j}^{t+1}\:\:}{\Delta \:x^2}\:+\frac{\left(u^m\right)_{i,\:j+1}^{t+1}\:-2\cdot \:\:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i,\:j-1}^{t+1}\:\:}{\Delta \:\:y^2}\:$
+"""
+
+# ╔═╡ 04dfddf3-9a5d-4206-a1df-4521f74e9a49
+md"Implicit Euler method 5 point stencil diagram  2D $\downarrow$"
+
+# ╔═╡ d3131ff5-efcf-4bf2-85e2-a29e58015227
+begin
+	stencil_pic_2d = "https://i.postimg.cc/fbjJyhJy/2-D-implicit-Stencil.png"
+	Resource(stencil_pic_2d, :width=>400)
+end
+
+# ╔═╡ 996dc4a9-2cdf-4e80-9371-e994b1dd58de
+md"""
+
+Pentadiagonal matrix
+
+
+Consequently there is a Pentadiagonal matrix arrising from the discritization of 2D porous medium eq.
+
+$\begin{pmatrix}-\left(\frac{2}{\Delta \:x^2}+\frac{2}{\Delta \:\:y^2}\right)&\frac{1}{\Delta \:x^2}&0&...&\frac{1}{\Delta y^2}&&&&0&0\\ \frac{1}{\Delta x^2}&.&\frac{1}{\Delta \:x^2}&&&\frac{1}{\Delta \:y^2}&&&&0\\ 0&\frac{1}{\Delta \:x^2}&.&\frac{1}{\Delta \:x^2}&&&.&&&\\ ...&&\frac{1}{\Delta \:x^2}&.&.&&&.&&\\ \frac{1}{\Delta \:y^2}&&&.&.&&&&&\\ &\frac{1}{\Delta \:y^2}&&&&.&&&&\\ &&.&&&&&&&\\ &&&.&&&&&&\\ 0&&&&&&&&&\\ 0&0&&&&&&&&\end{pmatrix}$
+
+"""
+
+# ╔═╡ 721be4cd-6130-4a1f-9c7c-303d6b4b6941
+md"The above matrix has sparcity similar to the plot below"
+
+# ╔═╡ e8a3ad6a-bcd7-4da7-9243-423723704c60
+begin
+	spar = "https://i.postimg.cc/Gt0M3YNv/sparsity.png"
+	Resource(spar, :width=>400)
+end
+
 # ╔═╡ 6e833899-da8d-465d-a1f1-4bfc0ca845a4
-md"## Stability"
+md"## Stability - Need to do this better"
 
 # ╔═╡ a01618ff-a7cc-4a19-b3b1-e133e8250bef
 md"### 1 dimensional case"
@@ -397,7 +437,17 @@ Hence the stability condition here is :
 """
 
 # ╔═╡ e5b13757-3587-4073-b29c-0891b6046d6b
-md"### 2 dimensional case"
+md"### 2 dimensional Stability"
+
+# ╔═╡ 189d7d5c-cf74-421e-b52d-ced9773fd32d
+md"""
+---> Need to write this better with more reasoning 
+
+We use Implicite Euler time step - since the system is Non linear - hence the stability of the system is the most important consideration
+
+Potentialy usage if Explicit euler time step would cause a problems with increaded Error and would also create problems with boundary conditions 
+
+"""
 
 # ╔═╡ 721e0c47-89a8-49db-8f90-87aab8b48e5f
 md"## Assemble S.O.L.E for FVM into matrices (?)"
@@ -1453,7 +1503,6 @@ version = "0.9.1+5"
 # ╟─a29532c0-03f3-4daa-8636-ef6c87630558
 # ╟─7c1b6922-df91-420b-8821-4de2c5fea2ea
 # ╟─8569a570-01ba-4084-be9b-d87555396e9c
-# ╟─6cd29b4d-fe43-49b2-ad9b-271b70820e3a
 # ╟─e17731ae-984a-443a-b377-50301e01c3e3
 # ╟─4dd861a4-18df-43d3-8227-2df87fc03bac
 # ╟─ae8cdb91-dbff-4b0a-98ba-24608adf1b14
@@ -1462,10 +1511,17 @@ version = "0.9.1+5"
 # ╟─d5d00a19-f23e-4444-9554-6dc530743fa7
 # ╟─6f2e916d-f270-4e1a-9d9f-f13f17051fdd
 # ╟─def425b2-4624-4161-9491-f5b2e625fa83
+# ╟─70e1196a-5280-4c19-a5e6-f675bc2de23c
+# ╠═04dfddf3-9a5d-4206-a1df-4521f74e9a49
+# ╟─d3131ff5-efcf-4bf2-85e2-a29e58015227
+# ╟─996dc4a9-2cdf-4e80-9371-e994b1dd58de
+# ╟─721be4cd-6130-4a1f-9c7c-303d6b4b6941
+# ╟─e8a3ad6a-bcd7-4da7-9243-423723704c60
 # ╟─6e833899-da8d-465d-a1f1-4bfc0ca845a4
 # ╟─a01618ff-a7cc-4a19-b3b1-e133e8250bef
 # ╟─70d40b13-e1af-4516-9e11-370a295e6a78
 # ╟─e5b13757-3587-4073-b29c-0891b6046d6b
+# ╟─189d7d5c-cf74-421e-b52d-ced9773fd32d
 # ╟─721e0c47-89a8-49db-8f90-87aab8b48e5f
 # ╟─d24c9f70-1e5f-4148-81c4-27afe0f3ed90
 # ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
