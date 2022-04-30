@@ -411,10 +411,7 @@ begin
 end
 
 # ╔═╡ 6e833899-da8d-465d-a1f1-4bfc0ca845a4
-md"## Stability - Need to do this better"
-
-# ╔═╡ a01618ff-a7cc-4a19-b3b1-e133e8250bef
-md"### 1 dimensional case"
+md"## Stability - Analysis"
 
 # ╔═╡ 70d40b13-e1af-4516-9e11-370a295e6a78
 md"""
@@ -436,8 +433,21 @@ Hence the stability condition here is :
 
 """
 
-# ╔═╡ e5b13757-3587-4073-b29c-0891b6046d6b
-md"### 2 dimensional Stability"
+# ╔═╡ 75257aa1-537d-46e6-8885-ddd88baa6f17
+md"""
+Error analysis for unsteady PDEs
+
+$\frac{\left|e\right|}{\left|O\right|}<Bound\left(Independent\:of\:grid\:resolution\right)$
+
+Error accumulates and evolves over time for unsteady PDEs 
+
+sol. to the problem 
+
+
+https://www.youtube.com/watch?v=ijI4yDkWsjw&list=PLcTpn5-ROA4xkuVzXOqIccUVyhzGUN9dw&index=41
+
+
+"""
 
 # ╔═╡ 189d7d5c-cf74-421e-b52d-ced9773fd32d
 md"""
@@ -446,6 +456,12 @@ md"""
 We use Implicite Euler time step - since the system is Non linear - hence the stability of the system is the most important consideration
 
 Potentialy usage if Explicit euler time step would cause a problems with increaded Error and would also create problems with boundary conditions 
+
+
+Real rason:
+Central space difference combined with backward Euler time is always stable BCZ the eigen values of the linearized matrix will always lie within the unit circle in complex plain
+This will not be the case for Explicit time steps - errors will grow exponentially
+
 
 """
 
@@ -1485,7 +1501,7 @@ version = "0.9.1+5"
 # ╟─87a34f4e-c396-482f-a310-0076d550e840
 # ╟─047d17a3-134b-4cdd-b6b1-65c2b43df0fe
 # ╟─7d61bfcd-cb35-4bac-9bf9-99a66b61809f
-# ╟─e74c7bc4-46c6-4192-a80b-b895344e00fb
+# ╠═e74c7bc4-46c6-4192-a80b-b895344e00fb
 # ╟─571bd08a-f493-4a46-b314-d7ab5b2210a0
 # ╟─6de33253-fcea-4e5a-bb2b-9115e0a46ad2
 # ╟─f7d7dfc5-ee9c-4b64-ae96-f58ee410acc1
@@ -1518,9 +1534,8 @@ version = "0.9.1+5"
 # ╟─721be4cd-6130-4a1f-9c7c-303d6b4b6941
 # ╟─e8a3ad6a-bcd7-4da7-9243-423723704c60
 # ╟─6e833899-da8d-465d-a1f1-4bfc0ca845a4
-# ╟─a01618ff-a7cc-4a19-b3b1-e133e8250bef
 # ╟─70d40b13-e1af-4516-9e11-370a295e6a78
-# ╟─e5b13757-3587-4073-b29c-0891b6046d6b
+# ╟─75257aa1-537d-46e6-8885-ddd88baa6f17
 # ╟─189d7d5c-cf74-421e-b52d-ced9773fd32d
 # ╟─721e0c47-89a8-49db-8f90-87aab8b48e5f
 # ╟─d24c9f70-1e5f-4148-81c4-27afe0f3ed90
