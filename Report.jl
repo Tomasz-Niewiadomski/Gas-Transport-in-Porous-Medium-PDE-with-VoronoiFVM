@@ -57,6 +57,18 @@ begin
 	TableOfContents(title="Table of Contents", depth=4)
 end
 
+# ╔═╡ 72cc14a8-6f79-4b6d-b7a0-c5e76a6bd711
+md"# Report for Scientific Computing
+Winter Semester 2021/2022
+
+Group number: 13
+
+Group members:
+- Shashank Shetty Kalavara
+- Thomas de Paula Barbosa
+- Tomasz Niewiadomski
+"
+
 # ╔═╡ 87a34f4e-c396-482f-a310-0076d550e840
 md"# Porous medium equation
 The porous medium equation is the simplest model of a nonlinear diffusion equation. It was initially derived by people interested in describing the oil extraction process in the petroleum industry, and the PDE is used to describe the flow of an ideal gas in a homogeneous porous medium.
@@ -2733,6 +2745,7 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─bb2682c2-4f42-442d-9c5d-cddda357fbd9
 # ╟─e1d686e2-c60b-11ec-20d1-8f9ce5c08b8e
+# ╟─72cc14a8-6f79-4b6d-b7a0-c5e76a6bd711
 # ╟─87a34f4e-c396-482f-a310-0076d550e840
 # ╟─047d17a3-134b-4cdd-b6b1-65c2b43df0fe
 # ╟─7d61bfcd-cb35-4bac-9bf9-99a66b61809f
