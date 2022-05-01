@@ -329,9 +329,9 @@ $\frac{\partial \:u}{\partial \:t}\:=\:\frac{\partial ^2\:u^m}{\partial \:x^2}\:
 # ╔═╡ 2e40c901-eec0-49e6-a961-3a95866f2c8d
 md"""
 
-Implicit Euler time step
+__Implicit Euler time step__
 
-Using the _Backward_ difference for time steps to evaluate the equation :
+Using the _Backward_ difference for the time steps & _central-difference_ for sapce to evaluate the equation :
 
 Simplistic representation
 
@@ -386,7 +386,7 @@ md"Implicit Euler method 5 point stencil diagram  2D $\downarrow$"
 # ╔═╡ d3131ff5-efcf-4bf2-85e2-a29e58015227
 begin
 	stencil_pic_2d = "https://i.postimg.cc/fbjJyhJy/2-D-implicit-Stencil.png"
-	Resource(stencil_pic_2d, :width=>400)
+	Resource(stencil_pic_2d, :width=>500)
 end
 
 # ╔═╡ 996dc4a9-2cdf-4e80-9371-e994b1dd58de
@@ -426,43 +426,63 @@ Error ≝ $e=$  sol.error$=$Exact sol. $-$Numerical sol.
 
 $A\cdot e\:=\:O\left(x\right)$
 
-$\left|e\right|\le \:\left|A^{-1}\right|\cdot \:\left|O\left(x\right)\right|$
-
-Hence the stability condition here is :
-- if Norm of Matrix $A$ is indpendent or decreses with $\Delta x$, error should dicrease with grid resolution increasing.
-
 """
 
 # ╔═╡ 75257aa1-537d-46e6-8885-ddd88baa6f17
 md"""
 Error analysis for unsteady PDEs
 
+__Stability:__  
+
 $\frac{\left|e\right|}{\left|O\right|}<Bound\left(Independent\:of\:grid\:resolution\right)$
 
-Error accumulates and evolves over time for unsteady PDEs 
 
-sol. to the problem 
+$u^{n+1}\:=\:M\:\cdot u^n\:+O^n$
+
+__M:__ is the Evollution matrix, a coefficient matrix that gives the nest time step evolution. 
+
+__O:__ Here is truncstion error from time & space discritisation.
+
+similarly a error equation for evolution of the error can be written as.
+
+$e^{n+1}\:=\:M\:\cdot e^n\:+O^n\:=\:M\left(M\:\cdot \:e^{n-1}\:+O^{n-1}\:\right)+O^{n-1} \: ...$
+_Error accumulates and evolves over time for unsteady an PDE._ 
+
+As we multiply the amtrix __M__ multiple times over the time steps to the errro, __It is the 'Eigen values' of M__ that determines if this operation results in values that keep getting bigger or smaller over time steps.
+
+$\left|Eigenvalues\left(M\right)\right|\le \:1$
+__Hence for the the sol. to be "Stable" eigen values of evolution matrix "M" as be bounded within the unit circle in a complex plain.__ Else even small error values would accumulate and grow over time steps, giving unacceptably large final error values. 
+
+Assuming Non-chaotic PDEs we can write a generealization for the above error evolution equation for linearized - Non linear PDE's as:
+
+__N :__ Non linear time evolution operator 
+
+$\left|u^{t+1}\right|=N\left(\left|u^t\right|\right)\:\:\rightarrow \:Numerical\:sol.$
+
+$u^{t+1}=N\left(u^t\right)\:\:\rightarrow \:Exact\:sol.$
+
+$e^{t+1}=N\left(u^t\right)\:-\:N\left(\left|u^t\right|\right)\:+O^n\:\approx \:\frac{\partial N}{\partial \:\left|u^n\right|}\cdot e^n\:+\:O^n$
 
 
-https://www.youtube.com/watch?v=ijI4yDkWsjw&list=PLcTpn5-ROA4xkuVzXOqIccUVyhzGUN9dw&index=41
+Hence here $\:\frac{\partial N}{\partial \:\left|u^n\right|}$ this derivative, __Jacobian of numerical approximation, should have eigen values within the unit circle in a complex plain for a stable sol.__, of a non linear PDE's.
+
+$\:\left|Eigenvalues\left(\frac{\partial \:\:\:N}{\partial \:\:\:\:\left|u^n\right|}\right)\:\right|\le \:1$
+
 
 
 """
 
-# ╔═╡ 189d7d5c-cf74-421e-b52d-ced9773fd32d
+# ╔═╡ c2690a65-5d99-4323-84d6-d90dd75dbd4b
 md"""
----> Need to write this better with more reasoning 
+-----------------------
 
-We use Implicite Euler time step - since the system is Non linear - hence the stability of the system is the most important consideration
+__Explicit Euler, Forward euler time step with Central difference applied to the porus medium eq., does not have the eigen values of its 'Jacobian of Numerical approx.' within the unit circle in complex plain. And hence is an unstable method regardless of how small the trunction errror is, since it would grow over time steps.__
 
-Potentialy usage if Explicit euler time step would cause a problems with increaded Error and would also create problems with boundary conditions 
+However
 
+__Impicit Eucler, Backward euler time step with central difference in space applied to the porus medium eq., has the eigen values of its 'Jacobian of Numerical approx.' within the unit circle in complex plain. And hence produces a stable sol.__  
 
-Real rason:
-Central space difference combined with backward Euler time is always stable BCZ the eigen values of the linearized matrix will always lie within the unit circle in complex plain
-This will not be the case for Explicit time steps - errors will grow exponentially
-
-
+-----------------------
 """
 
 # ╔═╡ 721e0c47-89a8-49db-8f90-87aab8b48e5f
@@ -1501,7 +1521,7 @@ version = "0.9.1+5"
 # ╟─87a34f4e-c396-482f-a310-0076d550e840
 # ╟─047d17a3-134b-4cdd-b6b1-65c2b43df0fe
 # ╟─7d61bfcd-cb35-4bac-9bf9-99a66b61809f
-# ╠═e74c7bc4-46c6-4192-a80b-b895344e00fb
+# ╟─e74c7bc4-46c6-4192-a80b-b895344e00fb
 # ╟─571bd08a-f493-4a46-b314-d7ab5b2210a0
 # ╟─6de33253-fcea-4e5a-bb2b-9115e0a46ad2
 # ╟─f7d7dfc5-ee9c-4b64-ae96-f58ee410acc1
@@ -1528,15 +1548,15 @@ version = "0.9.1+5"
 # ╟─6f2e916d-f270-4e1a-9d9f-f13f17051fdd
 # ╟─def425b2-4624-4161-9491-f5b2e625fa83
 # ╟─70e1196a-5280-4c19-a5e6-f675bc2de23c
-# ╠═04dfddf3-9a5d-4206-a1df-4521f74e9a49
+# ╟─04dfddf3-9a5d-4206-a1df-4521f74e9a49
 # ╟─d3131ff5-efcf-4bf2-85e2-a29e58015227
 # ╟─996dc4a9-2cdf-4e80-9371-e994b1dd58de
 # ╟─721be4cd-6130-4a1f-9c7c-303d6b4b6941
 # ╟─e8a3ad6a-bcd7-4da7-9243-423723704c60
 # ╟─6e833899-da8d-465d-a1f1-4bfc0ca845a4
 # ╟─70d40b13-e1af-4516-9e11-370a295e6a78
-# ╟─75257aa1-537d-46e6-8885-ddd88baa6f17
-# ╟─189d7d5c-cf74-421e-b52d-ced9773fd32d
+# ╠═75257aa1-537d-46e6-8885-ddd88baa6f17
+# ╟─c2690a65-5d99-4323-84d6-d90dd75dbd4b
 # ╟─721e0c47-89a8-49db-8f90-87aab8b48e5f
 # ╟─d24c9f70-1e5f-4148-81c4-27afe0f3ed90
 # ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
