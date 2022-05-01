@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.3
+# v0.19.2
 
 using Markdown
 using InteractiveUtils
@@ -39,10 +39,8 @@ begin
 end
 
 # ╔═╡ 87a34f4e-c396-482f-a310-0076d550e840
-md"# Porous medium equation 🧽
-It is the simplest model of a nonlinear diffusion equation and was derived by people interested in describing the oil extraction processes in petroleum industry. \
-
-Used to describe the flow of an ideal gas in a homogeneous porous medium.
+md"# Porous medium equation
+The porous medium equation is the simplest model of a nonlinear diffusion equation. It was initially derived by people interested in describing the oil extraction process in the petroleum industry, and the PDE is used to describe the flow of an ideal gas in a homogeneous porous medium.
 
 ----
 "
@@ -54,33 +52,33 @@ md"$\large u_t = \Delta (u^m)$
 
 # ╔═╡ 7d61bfcd-cb35-4bac-9bf9-99a66b61809f
 md"""
-The unknown $u(x,t)$ is to be understood as a _density_ of the gas at the point $x$ at time $t$. \
+The unknown $u(x,t)$ can be understood as the _density_ of a gas at a point $x$ in time $t$. \
 
 
 The exponent $m \in \mathbb{R}_{+}$
 
 
 
-- If $m>1$ it degenerates at $u=0$ and is called a _Slow Diffusion_ and creates free boundaries
-- If $m=1$ we obtain the _classical Heat Equation_.
-- If $m<1$, the equation experiences singularity at $u=0$ and it is called _Fast Diffusion_
+- If $m>1$ it degenerates at $u=0$, creates free boundaries, and is called a _Slow Diffusion_
+- If $m=1$ one obtains the _classical Heat Equation_.
+- If $m<1$, the equation experiences singularity at $u=0$ and is called a _Fast Diffusion_
 
-In our report, we focus on the case where $m>1$.
+This report focuses on the case where $m>1$.
 
 __Nonlinearity__ of the Porous medium equation is evident after the decomposition into $\frac{\partial u}{\partial t}= \frac{\partial}{\partial x}(mu^{m-1}\frac{\partial u}{\partial x})$, and writing it in the form $\frac{\partial u}{\partial t}= \frac{\partial}{\partial x}(D\frac{\partial u}{\partial x})$. \
-From that we obtain the _diffusion coefficient_ $D=D(u)=mu^{m-1}$, which is **not** a constant.
+From that, one obtains the _diffusion coefficient_ $D=D(u)=mu^{m-1}$, which is **not** a constant.
 
-Taking $m=2$ and looking at region $u=0$ , we obtain 
+Taking $m=2$ and looking at region $u=0$ , one obtains 
 
  $u_t = 2u\Delta u+2|\nabla u|^2 \bigg|_{u=0} \Rightarrow u_t \sim 2|\nabla u|^2$ 
 
-which is not parabolic and admits propagation fronts $\Rightarrow$ _Free Boundaries_ appear
+which is not parabolic and admits propagation fronts which means _Free Boundaries_ appear
 
-The fact that the porous medium equation's solution show degeneracy has a consequence in the _finite speed of propagation_ into vacuum (region of zero density) which is in contrast to the solutions of the classical Heat Equation which spread out at _infinite speeds_.
+The fact that the porous medium equation's solution shows degeneracy signifies that the speed of propagation in a vacuum (a space with zero density) is _finite_. This is in contrast to the solution in the classical Heat Equation, which spreads out at an _infinite speed_.
 """
 
 # ╔═╡ e74c7bc4-46c6-4192-a80b-b895344e00fb
-md"## Attempt at a solution
+md"## Attempt at a Solution
 $u_t = \Delta (u^m), \space u = u(x,t)$ 
 
 1) Seperation of variables : $u(x,t) = v(t)\cdot w(x)$
@@ -126,19 +124,20 @@ $\lambda = m\alpha (m\alpha + d - 2)$
 $u(x,t) = v(t)\cdot w(x) = \frac{1}{\big((1-m)\lambda t+ c\big)^{\frac{1}{m-1}}} \cdot |x|^{\frac{2}{m-1}} \space \space \blacksquare$ 
 
 	Notice that the denominator of the solution can be equal to 0 
-	in finite amount of time! 
+	in a finite amount of time! 
 
-	This means that the solution blows up in finite time, which implies that 
+	This means that the solution blows up at a finite time, which implies that 
 	the solution cannot be correct. 
 
-	That is why a different form of a solution has been proposed by the 
+	That is why a different form of a solution was proposed by the 
 	Russian mathematician Grigory Barenblatt. 
-	It is the Barenblatt solution that we will use to model our 
-	Gas Transport in Porous Medium partial differential equation. 
+
+	The Barenblatt solution is what will be used in this report to model the 
+	partial differential equation for a Gas Transport in a Porous Medium. 
 "
 
 # ╔═╡ 571bd08a-f493-4a46-b314-d7ab5b2210a0
-md" ## Barenblatt function 
+md" ## Barenblatt Function 
 $b(x,t) = max \bigg ( 0,t^{-\alpha}(1-\frac{α(m-1)r^2}{2dmt\frac{2α}{d}})^{\frac{1}{m-1}} \bigg )$ where : \
 \
 $r = |x|$ ,
@@ -200,23 +199,23 @@ begin
 end
 
 # ╔═╡ cf0383b2-292d-4c9a-a375-3b6a86f4b9f2
-md"These profiles are the alternative to Gaussian profiles, which we usually see in diffusion problems
+md"These profiles are the alternative to Gaussian profiles, which are usually seen in diffusion problems
 
 The Barenblatt function is a useful test case for determining the validity of the solution produced by Finite Volume Method solver.
 "
 #The fact that the profiles are parabolas for $m=2$ indicates that they are a strong solution of the parabolic differential equation problem"
 
 # ╔═╡ cda86f5e-700c-46d5-8fe6-7e05e35c8bd4
-md"# [IN PROGRESS] Finite volume space discretisation 📐"
+md"# Finite Volume Discretisation"
 
 # ╔═╡ 1f644a7e-6bb5-44b2-8b1d-b39a18111ba4
-md"## Generating discretisation grids"
+md"## Generating Discretisation Grids"
 
 # ╔═╡ bcdce42b-f6e5-4269-a95e-6e9edfb63d43
 proposition"
 __Idea__ :
  - Divide the domain into finite number of _finite volumes_ $\omega_k$
- - To each volume $\omega_k$ assign one value $u_k = u(\vec{x_k})$ - ($u$ at a _collocation point_ $\vec{x_k}$)
+ - For each volume $\omega_k$, assign a single value $u_k = u(\vec{x_k})$ - ($u$ at a _collocation point_ $\vec{x_k}$)
  - Approximate $\vec{\nabla} u$
 "
 
@@ -253,7 +252,7 @@ md"
 
 # ╔═╡ f536b466-2783-4099-bb75-ce35945ed71f
 md"
-For a __1D interval__ $\Omega = (a,b)$, we define _finite volumes_ by :
+For a __1D interval__ $\Omega = (a,b)$, one defines _finite volumes_ by :
 
 $
 \omega_{k} = \begin{cases} 
@@ -266,10 +265,7 @@ where $x_1=a<x2<\dots <x_{n-1} < x_n =b$
 "
 
 # ╔═╡ 9606acd1-d1df-4668-81ba-ef8894133ac6
-md"For a __generic 2D domain__ we use the Delunay triangulation method to obtain collocation points $\vec{x_k}$ at the triangle vertices. Using Voronoi cells, we define our _finite volumes_ with $\vec{x_k} \in \omega_k$"
-
-# ╔═╡ 2506545b-462f-41a5-817b-269d2545cc34
-md"Shashanks stuff $\downarrow$" 
+md"For a __generic 2D domain__ one uses the Delunay triangulation method to obtain collocation points $\vec{x_k}$ at the triangle vertices. Using Voronoi cells, one defines the _finite volumes_ with $\vec{x_k} \in \omega_k$"
 
 # ╔═╡ a29532c0-03f3-4daa-8636-ef6c87630558
 md"""
@@ -296,203 +292,25 @@ Example evaluation for the accuracy for _Forward_ approximation.
 
 $\frac{\partial u}{\partial \:x}\:\approx \:\frac{u_{i+1}\:-\:u_i}{\Delta x}\:-\:\left\{\frac{\Delta \:x}{2}\cdot \:\frac{\partial \:^2\:u}{\partial \:\:\:x^2}\right\}^i\:\:-\:\left\{\frac{\Delta \:\:x^2}{3!}\cdot \:\:\frac{\partial \:\:^3\:u}{\partial \:\:\:\:x^3}\right\}^i\: ...$
 
-when $\left(x_{i+1}\:-\:x_i\right)=\Delta x\:\rightarrow 0\:$ we can neglect the 2nd & higher order term to obtain the forward approximation $\frac{\partial u}{\partial \:x}\:\approx\:\frac{u_{i+1}\:-\:u_i}{\Delta x}$, i.e a decrease in the truncation error $O(\Delta x)$
+when $\left(x_{i+1}\:-\:x_i\right)=\Delta x\:\rightarrow 0\:$ one can neglect the 2nd and the higher order term to obtain the forward approximation $\frac{\partial u}{\partial \:x}\:\approx\:\frac{u_{i+1}\:-\:u_i}{\Delta x}$, i.e a decrease in the truncation error $O(\Delta x)$
 
 As $\Delta x\rightarrow 0\:\propto \:Error\:\rightarrow 0.$ 
 Hence the convergence of the _Forward_ difference
 
 -----------------------------
 
-These steps can be repeated to show the same for _backward_ approximation.
+These steps can be repeated to show the same for the _backward_ approximation.
 
 -----------------------------
 
-_Central_ approximation is essentially the addition of _forward_ & _backward_ approximation
+_Central_ approximation is essentially the addition of the _forward_ & the _backward_ approximation
 
 For the _central_ difference approximation, the truncation error is $\:\approx O\left(\Delta x^2\right)$
 
 """
 
-# ╔═╡ e17731ae-984a-443a-b377-50301e01c3e3
-md"## Implicit Euler for Porous Medium discretisation"
-
-# ╔═╡ 4dd861a4-18df-43d3-8227-2df87fc03bac
-md"### 1 dimensional case"
-
-# ╔═╡ ae8cdb91-dbff-4b0a-98ba-24608adf1b14
-md"""
-_Implicit_ Euler time step - for stability reasons
-
-$\frac{\partial \:u}{\partial \:t}\:=\:\frac{\partial ^2\:u^m}{\partial \:x^2}\:\:$
-"""
-
-# ╔═╡ 2e40c901-eec0-49e6-a961-3a95866f2c8d
-md"""
-
-__Implicit Euler time step__
-
-Using the _Backward_ difference for the time steps & _central-difference_ for sapce to evaluate the equation :
-
-Simplistic representation
-
-
-
-
-$$\frac{\:u_x^{t+1}-u^t_x}{\Delta t\:}\:=\frac{\left(u^m\right)_{x+1}^{t+1}\:-2\cdot \left(u^m\right)_x^{t+1}+\left(u^m\right)_{x-1}^{t+1}\:\:}{\Delta x^2}$$
-
-Super-scripts ≝ time-steps 
-
-Sub-scripts ≝ spatial-steps
-
-→ This formulation has more than 1 unknown in the Finite difference equation
-"""
-
-# ╔═╡ 21dd4a3a-dd1c-40e5-8b5b-9a6c3fc3ae99
-md"Implicit Euler method stencil diagram  1D $\downarrow$"
-
-# ╔═╡ d5d00a19-f23e-4444-9554-6dc530743fa7
-begin
-	stencil_pic_1d = "https://i.postimg.cc/KYpsSkLT/1-D-implicit-Stencil.png"
-	Resource(stencil_pic_1d, :width=>400)
-end
-
-# ╔═╡ 6f2e916d-f270-4e1a-9d9f-f13f17051fdd
-md"
-At one step calculation needs 2 unknowns from current time-step and 1 unknown from previous time-step. Hence we couple these unknows with other equations in the grid by writing the formula for all the grid points. Eventually this results in a tridiagonal coefficient matrix.
-
-$$\begin{pmatrix}\frac{-1}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&0&.&.&\\ \frac{1}{\Delta x^2}&\frac{-2}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&.&&\\ 0&.&\frac{-2}{\Delta \:\:x^2}&.&.&&\\ .&.&.&.&.&&\\ .&.&.&.&.&&\\ &&&&&&\\ &&&&&&\end{pmatrix}$$
-
-Since we are using the implicit time-steps, each time-step can then be solved lineraly.
-"
-
-# ╔═╡ def425b2-4624-4161-9491-f5b2e625fa83
-md"### 2 dimensional case"
-
-# ╔═╡ 70e1196a-5280-4c19-a5e6-f675bc2de23c
-md"""
-
-$\frac{\partial u}{\partial \:t}=\left(\frac{\partial ^2\:u^m}{\partial \:\:x^2}\:+\:\frac{\partial ^2\:u^m}{\partial \:\:y^2}\right)$
-
-__Implicit Euler for 2D - Porous Medium discretisation__
-
-Simplistic representation
-
-$\frac{\:u_{i,j}^{t+1}-u^t_{i,j}}{\Delta \:t\:}\:=\frac{\left(u^m\right)_{i+1,\:j}^{t+1}\:-2\cdot \:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i-1,\:j}^{t+1}\:\:}{\Delta \:x^2}\:+\frac{\left(u^m\right)_{i,\:j+1}^{t+1}\:-2\cdot \:\:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i,\:j-1}^{t+1}\:\:}{\Delta \:\:y^2}\:$
-"""
-
-# ╔═╡ 04dfddf3-9a5d-4206-a1df-4521f74e9a49
-md"Implicit Euler method 5 point stencil diagram  2D $\downarrow$"
-
-# ╔═╡ d3131ff5-efcf-4bf2-85e2-a29e58015227
-begin
-	stencil_pic_2d = "https://i.postimg.cc/fbjJyhJy/2-D-implicit-Stencil.png"
-	Resource(stencil_pic_2d, :width=>500)
-end
-
-# ╔═╡ 996dc4a9-2cdf-4e80-9371-e994b1dd58de
-md"""
-
-Pentadiagonal matrix
-
-
-Consequently there is a Pentadiagonal matrix arrising from the discritization of 2D porous medium eq.
-
-$\begin{pmatrix}-\left(\frac{2}{\Delta \:x^2}+\frac{2}{\Delta \:\:y^2}\right)&\frac{1}{\Delta \:x^2}&0&...&\frac{1}{\Delta y^2}&&&&0&0\\ \frac{1}{\Delta x^2}&.&\frac{1}{\Delta \:x^2}&&&\frac{1}{\Delta \:y^2}&&&&0\\ 0&\frac{1}{\Delta \:x^2}&.&\frac{1}{\Delta \:x^2}&&&.&&&\\ ...&&\frac{1}{\Delta \:x^2}&.&.&&&.&&\\ \frac{1}{\Delta \:y^2}&&&.&.&&&&&\\ &\frac{1}{\Delta \:y^2}&&&&.&&&&\\ &&.&&&&&&&\\ &&&.&&&&&&\\ 0&&&&&&&&&\\ 0&0&&&&&&&&\end{pmatrix}$
-
-"""
-
-# ╔═╡ 721be4cd-6130-4a1f-9c7c-303d6b4b6941
-md"The above matrix has sparcity similar to the plot below"
-
-# ╔═╡ e8a3ad6a-bcd7-4da7-9243-423723704c60
-begin
-	spar = "https://i.postimg.cc/Gt0M3YNv/sparsity.png"
-	Resource(spar, :width=>400)
-end
-
-# ╔═╡ 6e833899-da8d-465d-a1f1-4bfc0ca845a4
-md"## Stability - Analysis"
-
-# ╔═╡ 70d40b13-e1af-4516-9e11-370a295e6a78
-md"""
- Truncation errror ≝ $O(x)$ 
-
-
-Coefficient matrix shown above ≝ $A$
-
-$$O\left(x\right)=\:A\cdot u\:-\frac{\partial u}{\partial t}$$
-
-Error ≝ $e=$  sol.error$=$Exact sol. $-$Numerical sol.
-
-$A\cdot e\:=\:O\left(x\right)$
-
-"""
-
-# ╔═╡ 75257aa1-537d-46e6-8885-ddd88baa6f17
-md"""
-Error analysis for unsteady PDEs
-
-__Stability:__  
-
-$\frac{\left|e\right|}{\left|O\right|}<Bound\left(Independent\:of\:grid\:resolution\right)$
-
-
-$u^{n+1}\:=\:M\:\cdot u^n\:+O^n$
-
-__M:__ is the Evollution matrix, a coefficient matrix that gives the nest time step evolution. 
-
-__O:__ Here is truncstion error from time & space discritisation.
-
-similarly a error equation for evolution of the error can be written as.
-
-$e^{n+1}\:=\:M\:\cdot e^n\:+O^n\:=\:M\left(M\:\cdot \:e^{n-1}\:+O^{n-1}\:\right)+O^{n-1} \: ...$
-_Error accumulates and evolves over time for unsteady an PDE._ 
-
-As we multiply the amtrix __M__ multiple times over the time steps to the errro, __It is the 'Eigen values' of M__ that determines if this operation results in values that keep getting bigger or smaller over time steps.
-
-$\left|Eigenvalues\left(M\right)\right|\le \:1$
-__Hence for the the sol. to be "Stable" eigen values of evolution matrix "M" as be bounded within the unit circle in a complex plain.__ Else even small error values would accumulate and grow over time steps, giving unacceptably large final error values. 
-
-Assuming Non-chaotic PDEs we can write a generealization for the above error evolution equation for linearized - Non linear PDE's as:
-
-__N :__ Non linear time evolution operator 
-
-$\left|u^{t+1}\right|=N\left(\left|u^t\right|\right)\:\:\rightarrow \:Numerical\:sol.$
-
-$u^{t+1}=N\left(u^t\right)\:\:\rightarrow \:Exact\:sol.$
-
-$e^{t+1}=N\left(u^t\right)\:-\:N\left(\left|u^t\right|\right)\:+O^n\:\approx \:\frac{\partial N}{\partial \:\left|u^n\right|}\cdot e^n\:+\:O^n$
-
-
-Hence here $\:\frac{\partial N}{\partial \:\left|u^n\right|}$ this derivative, __Jacobian of numerical approximation, should have eigen values within the unit circle in a complex plain for a stable sol.__, of a non linear PDE's.
-
-$\:\left|Eigenvalues\left(\frac{\partial \:\:\:N}{\partial \:\:\:\:\left|u^n\right|}\right)\:\right|\le \:1$
-
-
-
-"""
-
-# ╔═╡ c2690a65-5d99-4323-84d6-d90dd75dbd4b
-md"""
------------------------
-
-__Explicit Euler, Forward euler time step with Central difference applied to the porus medium eq., does not have the eigen values of its 'Jacobian of Numerical approx.' within the unit circle in complex plain. And hence is an unstable method regardless of how small the trunction errror is, since it would grow over time steps.__
-
-However
-
-__Impicit Eucler, Backward euler time step with central difference in space applied to the porus medium eq., has the eigen values of its 'Jacobian of Numerical approx.' within the unit circle in complex plain. And hence produces a stable sol.__  
-
------------------------
-"""
-
-# ╔═╡ 721e0c47-89a8-49db-8f90-87aab8b48e5f
-md"## Assemble S.O.L.E for FVM into matrices (?)"
-
-# ╔═╡ d24c9f70-1e5f-4148-81c4-27afe0f3ed90
-md"## Solve those matrices (?)"
-
 # ╔═╡ b4c8ddaa-f7b8-481b-99be-678b50af4f55
-md"# Time discretisation ⏰"
+md"## Time Discretisation"
 
 # ╔═╡ 1a2be55e-a7ad-480c-82e0-744cae76e88d
 proposition" __Time discretisation options:__
@@ -505,9 +323,9 @@ proposition" __Time discretisation options:__
 md"""
 - __Time discretisation procedure__ :
 
-  - choose $t_0 < t_1 < \dots < t_N = t_{end}$
-  - define $\tau _n ≝ t_n - t_{n-1}$
-  -  in our case :
+  - Choose $t_0 < t_1 < \dots < t_N = t_{end}$
+  - Define $\tau _n ≝ t_n - t_{n-1}$
+In this case:
 
 $u_\theta ≝ \theta u_n + (1-\theta)u_{n-1}$
 
@@ -518,7 +336,7 @@ $\frac{u_n - u_{n-1}}{\tau_n}-\Delta u_\theta^m = 0 \space \space \space in \spa
 """
 
 # ╔═╡ 5089e81d-97e8-4512-b9e3-b147638f7bf4
-md" #### Time-discritesation methods comparison :
+md" #### Time-discretisation methods comparison :
 
 | Method :| $\theta :$ | Accuracy : | Stability condition :
 |:---------- | ---------- |------------|:------------:|
@@ -530,7 +348,7 @@ md" #### Time-discritesation methods comparison :
 # ╔═╡ c938c461-5005-449e-a1e7-0067bb4421b2
 md"
       	Implicit (backward) Euler method can be applied in unstable 
-	  systems (that result in stiff matrices) due to unconditional stability
+	  systems (resulting in stiff matrices) due to unconditional stability
       of the method. In order to maintain time-accuracy one needs to choose
       the time steps sufficiently small enough due to first order time accuracy.
       Time accuracy as a result of this method suffers more.
@@ -553,46 +371,185 @@ md"
       limitations thus a time-discretisation choice is of high importance.
 "
 
-# ╔═╡ 641a9ba4-af2e-4fbd-be28-24bd5100fad3
-md"# [EMPTY] Solution methods 📊"
+# ╔═╡ e17731ae-984a-443a-b377-50301e01c3e3
+md"## Implicit Euler for Porous Medium"
 
-# ╔═╡ bbbfcde8-65fe-49ee-aa3d-a75f52dbd756
-md"# Simulation results 👨🏽‍💻"
+# ╔═╡ 4dd861a4-18df-43d3-8227-2df87fc03bac
+md"### 1 Dimensional Case"
 
-# ╔═╡ 67d6ac69-f3b3-4f5f-ba24-2ddaead90f42
-md"## System preparation with VoronoiFVM "
+# ╔═╡ ae8cdb91-dbff-4b0a-98ba-24608adf1b14
+md"""
+_Implicit_ Euler time step - for stability reasons
 
-# ╔═╡ d9576c8e-798f-453b-bed3-c3d95ea2d2de
-md"## Solving the system"
+$\frac{\partial \:u}{\partial \:t}\:=\:\frac{\partial ^2\:u^m}{\partial \:x^2}\:\:$
+"""
 
-# ╔═╡ 522b9565-7774-4fc3-8e68-ae50bec4ed82
-md"## Analysis of the results"
+# ╔═╡ 2e40c901-eec0-49e6-a961-3a95866f2c8d
+md"""
 
-# ╔═╡ 5823d8f0-3d00-415a-9fa1-fc3d10917ba3
-md" ### Space-time domain solution :"
+Using the _Backward_ difference for the time steps and the _Central_ difference for space to evaluate the equation:
 
-# ╔═╡ 44fa473e-306c-4e53-8a5f-fdcd0b985ec1
-md"### 1 dimensional case "
+Simplistic representation
 
-# ╔═╡ 44187ce4-72dc-47db-82b2-1e39c6877a09
-md"#### Solution"
 
-# ╔═╡ e095d0f5-87e8-4461-af50-59307e17874f
-md"### 2 dimensional case"
 
-# ╔═╡ 6a5c5ad7-b16b-4848-9fcd-1a3927896ed9
-md"## Comparison with DifferentialEquations.jl"
 
-# ╔═╡ cfabd7d6-7ba0-42a2-ae61-8381bb22a784
-md"#### That's how you embed a picture $\downarrow$  
+$$\frac{\:u_x^{t+1}-u^t_x}{\Delta t\:}\:=\frac{\left(u^m\right)_{x+1}^{t+1}\:-2\cdot \left(u^m\right)_x^{t+1}+\left(u^m\right)_{x-1}^{t+1}\:\:}{\Delta x^2}$$
 
-We need to make the git repository public if we want to link the images this way"
+Super-scripts ≝ time-steps 
 
-# ╔═╡ 157c22f8-f751-4c59-995c-b1ebbe4fcd93
-error_diffeq_2d = "https://github.com/bpatrik/pigallery2/blob/master/demo/images/IMG_1252.jpg?raw=true"
+Sub-scripts ≝ spatial-steps
 
-# ╔═╡ fff246f5-1e41-456d-a0b3-e0458091e87d
-md"$(Resource(error_diffeq_2d))"
+→ This formulation has more than 1 unknown in the Finite difference equation
+"""
+
+# ╔═╡ 21dd4a3a-dd1c-40e5-8b5b-9a6c3fc3ae99
+md"Implicit Euler method stencil diagram  1D"
+
+# ╔═╡ d5d00a19-f23e-4444-9554-6dc530743fa7
+begin
+	stencil_pic_1d = "https://i.postimg.cc/KYpsSkLT/1-D-implicit-Stencil.png"
+	Resource(stencil_pic_1d, :width=>400)
+end
+
+# ╔═╡ 6f2e916d-f270-4e1a-9d9f-f13f17051fdd
+md"
+At one step, the calculation needs 2 unknowns from current time-step and 1 unknown from the previous time-step. Hence these unknows are coupled with other equations in the grid by writing the formula for all the grid points. Eventually this results in a tridiagonal coefficient matrix.
+
+$$\begin{pmatrix}\frac{-1}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&0&.&.&\\ \frac{1}{\Delta x^2}&\frac{-2}{\Delta \:x^2}&\frac{1}{\Delta \:x^2}&0&.&&\\ 0&.&\frac{-2}{\Delta \:\:x^2}&.&.&&\\ .&.&.&.&.&&\\ .&.&.&.&.&&\\ &&&&&&\\ &&&&&&\end{pmatrix}$$
+
+Since implicit time-steps are being used, each time-step can then be solved lineraly.
+"
+
+# ╔═╡ def425b2-4624-4161-9491-f5b2e625fa83
+md"### 2 Dimensional Case"
+
+# ╔═╡ 70e1196a-5280-4c19-a5e6-f675bc2de23c
+md"""
+
+$\frac{\partial u}{\partial \:t}=\left(\frac{\partial ^2\:u^m}{\partial \:\:x^2}\:+\:\frac{\partial ^2\:u^m}{\partial \:\:y^2}\right)$
+
+__Implicit Euler for 2D - Porous Medium discretisation__
+
+Simplistic representation
+
+$\frac{\:u_{i,j}^{t+1}-u^t_{i,j}}{\Delta \:t\:}\: =$
+$=
+\frac{\left(u^m\right)_{i+1,\:j}^{t+1}\:-2\cdot \:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i-1,\:j}^{t+1}\:\:}{\Delta \:x^2}\:+\frac{\left(u^m\right)_{i,\:j+1}^{t+1}\:-2\cdot \:\:\left(u^m\right)_{i,\:j}^{t+1}+\left(u^m\right)_{i,\:j-1}^{t+1}\:\:}{\Delta \:\:y^2}\:$
+"""
+
+# ╔═╡ 04dfddf3-9a5d-4206-a1df-4521f74e9a49
+md"Implicit Euler method 5 point stencil diagram  2D"
+
+# ╔═╡ d3131ff5-efcf-4bf2-85e2-a29e58015227
+begin
+	stencil_pic_2d = "https://i.postimg.cc/fbjJyhJy/2-D-implicit-Stencil.png"
+	Resource(stencil_pic_2d, :width=>500)
+end
+
+# ╔═╡ 996dc4a9-2cdf-4e80-9371-e994b1dd58de
+md"""
+
+Pentadiagonal matrix
+
+
+Consequently there is a pentadiagonal matrix that results from the discretisation of the 2D porous medium equation.
+
+$\begin{pmatrix}-\left(\frac{2}{\Delta \:x^2}+\frac{2}{\Delta \:\:y^2}\right)&\frac{1}{\Delta \:x^2}&0&...&\frac{1}{\Delta y^2}&&&&0&0\\ \frac{1}{\Delta x^2}&.&\frac{1}{\Delta \:x^2}&&&\frac{1}{\Delta \:y^2}&&&&0\\ 0&\frac{1}{\Delta \:x^2}&.&\frac{1}{\Delta \:x^2}&&&.&&&\\ ...&&\frac{1}{\Delta \:x^2}&.&.&&&.&&\\ \frac{1}{\Delta \:y^2}&&&.&.&&&&&\\ &\frac{1}{\Delta \:y^2}&&&&.&&&&\\ &&.&&&&&&&\\ &&&.&&&&&&\\ 0&&&&&&&&&\\ 0&0&&&&&&&&\end{pmatrix}$
+
+"""
+
+# ╔═╡ 721be4cd-6130-4a1f-9c7c-303d6b4b6941
+md"The matrix above has a sparcity similar to the plot below:"
+
+# ╔═╡ e8a3ad6a-bcd7-4da7-9243-423723704c60
+begin
+	spar = "https://i.postimg.cc/Gt0M3YNv/sparsity.png"
+	Resource(spar, :width=>400)
+end
+
+# ╔═╡ 6e833899-da8d-465d-a1f1-4bfc0ca845a4
+md"## Stability Analysis"
+
+# ╔═╡ 70d40b13-e1af-4516-9e11-370a295e6a78
+md"""
+ Truncation errror ≝ $O(x)$ 
+
+
+Coefficient matrix shown above ≝ $A$
+
+$$O\left(x\right)=\:A\cdot u\:-\frac{\partial u}{\partial t}$$
+
+Error ≝ $e=$  solution error$=$Exact solution $-$Numerical solution
+
+$A\cdot e\:=\:O\left(x\right)$
+
+"""
+
+# ╔═╡ 75257aa1-537d-46e6-8885-ddd88baa6f17
+md"""
+Error analysis for unsteady PDEs
+
+__Stability:__  
+
+$\frac{\left|e\right|}{\left|O\right|}<Bound\left(Independent\:of\:grid\:resolution\right)$
+
+
+$u^{n+1}\:=\:M\:\cdot u^n\:+O^n$
+
+__M:__ is the evolution matrix, a coefficient matrix that gives the next time step evolution. 
+
+__O:__ is the truncation error from time and space discretisation.
+
+Similarly, an error equation for the evolution of the error can be written as:
+
+$e^{n+1}\:=\:M\:\cdot e^n\:+O^n\:=\:M\left(M\:\cdot \:e^{n-1}\:+O^{n-1}\:\right)+O^{n-1} \: ...$
+_Error accumulates and evolves over time for an unsteady PDE._ 
+
+As one multiplies the matrix __M__ by the error many times over the time steps, __it is the 'eigen values' of M__ that determine if this operation results in values that continually increase or decrease over time steps.
+
+$\left|Eigenvalues\left(M\right)\right|\le \:1$
+Hence for the the solution to be "stable", eigen values of the evolution matrix "M" __have to be bounded within the unit circle__ in a complex plane (spectral radius $$< 1$$). Otherwise even small error values would accumulate and grow over time steps, giving unacceptably large final error values. 
+
+Assuming non-chaotic PDEs, one can write a generalisation for the above error evolution equation for linearised non-linear PDE's as:
+
+__N :__ Non-linear time evolution operator 
+
+$\left|u^{t+1}\right|=N\left(\left|u^t\right|\right)\:\:\rightarrow \:Numerical\:solution$
+
+$u^{t+1}=N\left(u^t\right)\:\:\rightarrow \:Exact\:solution$
+
+$e^{t+1}=N\left(u^t\right)\:-\:N\left(\left|u^t\right|\right)\:+O^n\:\approx \:\frac{\partial N}{\partial \:\left|u^n\right|}\cdot e^n\:+\:O^n$
+
+
+Hence, this derivative $\:\frac{\partial N}{\partial \:\left|u^n\right|}$ (a Jacobian of the numerical approximation), should have __eigen values within the unit circle__ in the complex plane for a stable solution of the non-linear PDE.
+
+$\:\left|Eigenvalues\left(\frac{\partial \:\:\:N}{\partial \:\:\:\:\left|u^n\right|}\right)\:\right|\le \:1$
+
+
+
+"""
+
+# ╔═╡ c2690a65-5d99-4323-84d6-d90dd75dbd4b
+proposition"""
+-----------------------
+
+Explicit Euler: forward difference in time steps with central difference in space applied to the porous medium equation, does not have the eigen values of its 'Jacobian of numerical approximation' within the unit circle in the complex plane. Hence it's an unstable method regardless of how small the trunction error is, since it would grow over time steps either way.
+
+However
+
+Implicit Euler: backward difference in time steps with central difference in space applied to the porous medium equation, has the eigen values of its 'Jacobian of numerical approximation' within the unit circle in the complex plane. Hence it produces a stable solution.
+
+For this reason, the implicit Euler method is used in the simulation.
+
+-----------------------
+"""
+
+# ╔═╡ 9a8290b8-6df0-414e-b134-19e8b63bd5f5
+md"## Solving the Systems of Matrices"
+
+# ╔═╡ 69cd68da-d128-4d69-a3eb-b2e09e9894d4
+md"Each linear time step can be solved using Newton's Method. In order to use such a method, one requires the idea of dual numbers (easily implemented in Julia) which allows the usage of automatic differentiation. This method can also be applied to transient problems."
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1535,10 +1492,16 @@ version = "0.9.1+5"
 # ╟─b80011bf-dfe2-4044-b874-418c01398317
 # ╟─f536b466-2783-4099-bb75-ce35945ed71f
 # ╟─9606acd1-d1df-4668-81ba-ef8894133ac6
-# ╟─2506545b-462f-41a5-817b-269d2545cc34
 # ╟─a29532c0-03f3-4daa-8636-ef6c87630558
 # ╟─7c1b6922-df91-420b-8821-4de2c5fea2ea
 # ╟─8569a570-01ba-4084-be9b-d87555396e9c
+# ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
+# ╟─1a2be55e-a7ad-480c-82e0-744cae76e88d
+# ╟─c68a801c-8b4f-4537-94d8-71f52885ece4
+# ╟─5089e81d-97e8-4512-b9e3-b147638f7bf4
+# ╟─c938c461-5005-449e-a1e7-0067bb4421b2
+# ╟─036054a9-57e3-4b32-9f82-b3db93734bfe
+# ╟─dba97448-0a74-45fe-acf5-2c9f0dccbcac
 # ╟─e17731ae-984a-443a-b377-50301e01c3e3
 # ╟─4dd861a4-18df-43d3-8227-2df87fc03bac
 # ╟─ae8cdb91-dbff-4b0a-98ba-24608adf1b14
@@ -1555,29 +1518,9 @@ version = "0.9.1+5"
 # ╟─e8a3ad6a-bcd7-4da7-9243-423723704c60
 # ╟─6e833899-da8d-465d-a1f1-4bfc0ca845a4
 # ╟─70d40b13-e1af-4516-9e11-370a295e6a78
-# ╠═75257aa1-537d-46e6-8885-ddd88baa6f17
+# ╟─75257aa1-537d-46e6-8885-ddd88baa6f17
 # ╟─c2690a65-5d99-4323-84d6-d90dd75dbd4b
-# ╟─721e0c47-89a8-49db-8f90-87aab8b48e5f
-# ╟─d24c9f70-1e5f-4148-81c4-27afe0f3ed90
-# ╟─b4c8ddaa-f7b8-481b-99be-678b50af4f55
-# ╟─1a2be55e-a7ad-480c-82e0-744cae76e88d
-# ╟─c68a801c-8b4f-4537-94d8-71f52885ece4
-# ╟─5089e81d-97e8-4512-b9e3-b147638f7bf4
-# ╟─c938c461-5005-449e-a1e7-0067bb4421b2
-# ╟─036054a9-57e3-4b32-9f82-b3db93734bfe
-# ╟─dba97448-0a74-45fe-acf5-2c9f0dccbcac
-# ╟─641a9ba4-af2e-4fbd-be28-24bd5100fad3
-# ╟─bbbfcde8-65fe-49ee-aa3d-a75f52dbd756
-# ╟─67d6ac69-f3b3-4f5f-ba24-2ddaead90f42
-# ╟─d9576c8e-798f-453b-bed3-c3d95ea2d2de
-# ╟─522b9565-7774-4fc3-8e68-ae50bec4ed82
-# ╟─5823d8f0-3d00-415a-9fa1-fc3d10917ba3
-# ╟─44fa473e-306c-4e53-8a5f-fdcd0b985ec1
-# ╟─44187ce4-72dc-47db-82b2-1e39c6877a09
-# ╟─e095d0f5-87e8-4461-af50-59307e17874f
-# ╟─6a5c5ad7-b16b-4848-9fcd-1a3927896ed9
-# ╟─cfabd7d6-7ba0-42a2-ae61-8381bb22a784
-# ╠═157c22f8-f751-4c59-995c-b1ebbe4fcd93
-# ╠═fff246f5-1e41-456d-a0b3-e0458091e87d
+# ╟─9a8290b8-6df0-414e-b134-19e8b63bd5f5
+# ╟─69cd68da-d128-4d69-a3eb-b2e09e9894d4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
