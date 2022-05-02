@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.2
+# v0.19.3
 
 using Markdown
 using InteractiveUtils
@@ -705,10 +705,7 @@ end;
 error_array_1d = create_error_array(solve_system_vFVM, 1, 200);
 
 # ╔═╡ 9ff628f6-c931-4ae5-bfdf-7dda8e935fa6
-# ╠═╡ disabled = true
-#=╠═╡
-# error_array_2d = create_error_array(solve_system_vFVM, 2, 40)  # computationally heavy
-  ╠═╡ =#
+# error_array_2d = create_error_array(solve_system_vFVM, 2, grid_points);  # computationally heavy
 
 # ╔═╡ 98447850-b6a3-4839-b9cf-857e8c9b7685
 md"## Analysis of the Results"
@@ -798,6 +795,12 @@ begin
 	gridplot!(vis2d_1, grid_2d, title="2D grid", legend=:rt, show=true)
 end
 =#
+
+# ╔═╡ 5026fc32-1488-4bc0-8407-c27194adbfb5
+begin
+	grid_image = "https://i.postimg.cc/gJdxdLVr/Grid-2d.png"
+	Resource(grid_image)
+end
 
 # ╔═╡ f5289204-f1ee-40b6-ae7c-6af06c26f0fa
 time_step = @bind time_step Slider(1:length(time_sol_2d), show_value = true)
@@ -943,7 +946,7 @@ md"#### 2D Case"
 md"The 2D case is computationally intensive. To avoid having the computer calculate for approximately 15 minutes, the pictures displayed below are embedded. All these pictures have been produced with the uncommented code in the next cells."
 
 # ╔═╡ 8abb6989-e941-4775-a578-ef2b06834afd
-# error_array_diffeq_2d = create_error_array(solve_system_diffeq, 2, 200);
+# error_array_diffeq_2d = create_error_array(solve_system_diffeq, 2, grid_points);
 
 # ╔═╡ 258a8715-3aee-4fca-85fa-411a39028019
 #=begin
@@ -960,6 +963,21 @@ end=#
 begin
 	diff_equation_2d = "https://i.postimg.cc/RVczm0hb/error-diffeq-2d-fine.png"
 	Resource(diff_equation_2d, :width=>800)
+end
+
+# ╔═╡ 322b4403-7f62-4173-bf79-1a1113ea43bb
+#=begin
+	comparison = scatter(10:5:40, error_array_2d, label="VoronoiFVM", color="#DFAFBC")
+	comparison = plot!(10:5:40, error_array_2d, label=false, color="#DFAFBC")
+	comparison = scatter!(10:5:40, error_array_diffeq_2d, label="Differential Eq.", color="#ccccff")
+	comparison = plot!(10:5:40, error_array_diffeq_2d, label=false, color="#ccccff")
+	comparison = plot!(title="Comparison Between Error Values", dpi=500)
+end=#
+
+# ╔═╡ 6f1a07b0-35c1-4784-9f61-b1ed13ea9cdd
+begin
+	comparison_img = "https://i.postimg.cc/ry4qgwxP/Error-comparison.png"
+	Resource(comparison_img)
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -2813,6 +2831,7 @@ version = "0.9.1+5"
 # ╟─2822f1f8-6d96-46ee-a85f-6097dfc5dbee
 # ╟─3082b60d-cc3c-426d-a31a-c0c288641272
 # ╠═b663cdbe-00cb-4f20-a497-f2c21562255d
+# ╟─5026fc32-1488-4bc0-8407-c27194adbfb5
 # ╟─f5289204-f1ee-40b6-ae7c-6af06c26f0fa
 # ╟─534c5a7f-f77c-48ab-961f-89c01f5353bf
 # ╟─f372a153-0956-46a9-91d0-dc0feafe5f2f
@@ -2831,6 +2850,8 @@ version = "0.9.1+5"
 # ╟─9488a7f3-f356-4d2d-b9f2-a8003e055a80
 # ╠═8abb6989-e941-4775-a578-ef2b06834afd
 # ╠═258a8715-3aee-4fca-85fa-411a39028019
-# ╟─1541286c-573f-476e-a950-f691d03e4d23
+# ╠═1541286c-573f-476e-a950-f691d03e4d23
+# ╠═322b4403-7f62-4173-bf79-1a1113ea43bb
+# ╟─6f1a07b0-35c1-4784-9f61-b1ed13ea9cdd
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
