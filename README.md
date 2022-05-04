@@ -3,7 +3,7 @@
 Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
-<h1> $'\frac{\partial u(x,t)}{\partial t} = \Delta u(x,t)^m'$ </h1>
+<h1> $`\frac{\partial u(x,t)}{\partial t} = \Delta u(x,t)^m`$ </h1>
 
 Solving the Gas Transport in Porous Medium PDE 🧽 - using the Voronoi Finite Volume Method (VoronoiFVM.jl package)
 
