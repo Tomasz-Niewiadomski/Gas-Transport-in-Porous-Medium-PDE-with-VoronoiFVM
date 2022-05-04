@@ -11,7 +11,6 @@ Successful error convergence in both cases - using Implicit & Explicit Euler met
 
 
 <img width="300" alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166707294-d01b3971-54a8-4acc-bd83-33b7d82024ee.png">
-<img width="300" alt="Screenshot 2022-05-04 at 16 46 01" src="https://user-images.githubusercontent.com/74839077/166707343-845ef4b2-99cd-4724-8b93-b2be13c3c220.png">
 
 1D space-time solution             |  2D space solution at t = t0 |  2D space-time solution 
 :-------------------------:|:-------------------------:|:-------------------------:
