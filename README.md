@@ -1,6 +1,6 @@
 # Gas-Transport-in-Porous-Medium-PDE-with-VoronoiFVM
 
-Main file : Report.jl
+Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
 Solving the Gas Transport in Porous Medium PDE 🧽 - using the Voronoi Finite Volume Method (VoronoiFVM.jl package)
