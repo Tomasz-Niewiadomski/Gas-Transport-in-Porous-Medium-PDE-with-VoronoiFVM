@@ -3,7 +3,20 @@
 Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
-<h1> u_t = Δu^m
+<h1> <math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mi>u</mi>
+    <mi>t</mi>
+  </msub>
+  <mo>=</mo>
+  <mrow>
+    <mo>&#x394;</mo>
+  </mrow>
+  <msup>
+    <mi>u</mi>
+    <mi>m</mi>
+  </msup>
+</math>
 </h1>
 
 
