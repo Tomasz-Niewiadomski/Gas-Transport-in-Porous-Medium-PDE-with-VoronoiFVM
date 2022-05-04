@@ -3,20 +3,9 @@
 Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
-<h1> <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <msub>
-    <mi>u</mi>
-    <mi>t</mi>
-  </msub>
-  <mo>=</mo>
-  <mrow>
-    <mo>&#x394;</mo>
-  </mrow>
-  <msup>
-    <mi>u</mi>
-    <mi>m</mi>
-  </msup>
-</math>
+
+<h1> <img width="200" alt="Screenshot 2022-05-04 at 17 14 41" src="https://user-images.githubusercontent.com/74839077/166713284-5a5d7897-58ad-4bd5-87d5-a61514306b86.png">
+  Gas Transport in Porous Medium 🧽
 </h1>
 
 
