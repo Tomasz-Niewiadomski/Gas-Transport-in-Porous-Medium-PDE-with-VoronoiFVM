@@ -4,7 +4,7 @@ Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
 
-<h1> <img src="https://render.githubusercontent.com/render/math?math=\frac{\partial u}{\partial t} = \Delta u^m">
+<h1> 
   Gas Transport in Porous Medium 🧽
 </h1>
 
