@@ -9,37 +9,21 @@ For a quick look : Report.html   <-- Limited to graphs at timestep = t0
     <mi>t</mi>
   </msub>
   <mo>=</mo>
-  <mi mathvariant="normal">&#x394;</mi>
-  <mo stretchy="false">(</mo>
+  <mrow>
+    <mo>&#x394;</mo>
+  </mrow>
   <msup>
     <mi>u</mi>
     <mi>m</mi>
   </msup>
-  <mo stretchy="false">)</mo>
-  <mo>,</mo>
-  <mtext>&#xA0;</mtext>
-  <mi>u</mi>
-  <mo>=</mo>
-  <mi>u</mi>
-  <mo stretchy="false">(</mo>
-  <mi>x</mi>
-  <mo>,</mo>
-  <mi>t</mi>
-  <mo stretchy="false">)</mo>
 </math>
 </h1>
 
-\begin{displaymath}
-r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt[]{\sum_{i=1}^{n}(x_i - \bar{x})^2 \sum_{i=1}^{n}(y_i - \bar{y})^2}}
-\end{displaymath}
 
-
+```
 Simulation results for 1 and 2 dimensions, based on the Barenblatt solution's initial condition.
 Comparison with DifferentialEquations.jl solver yealding a marginally better result.
 Successful error convergence in both cases - using Implicit & Explicit Euler method.
-
-```math
-SE = \frac{\sigma}{\sqrt{n}}
 ```
 
 1D space-time solution             |  2D space solution at t = t0 |  2D space-time solution 
