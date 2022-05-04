@@ -38,9 +38,9 @@ Simulation results for 1 and 2 dimensions, based on the Barenblatt solution's in
 Comparison with DifferentialEquations.jl solver yealding a marginally better result.
 Successful error convergence in both cases - using Implicit & Explicit Euler method.
 
-<p align="center">
-<img align="center" alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166707294-d01b3971-54a8-4acc-bd83-33b7d82024ee.png">
-</p>
+```math
+SE = \frac{\sigma}{\sqrt{n}}
+```
 
 1D space-time solution             |  2D space solution at t = t0 |  2D space-time solution 
 :-------------------------:|:-------------------------:|:-------------------------:
