@@ -8,7 +8,7 @@ For a quick look : Report.html   <-- Limited to graphs at timestep = t0
   Gas Transport in Porous Medium 🧽
 </h1>
 <p align="center">
-<img width="300" alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166715884-a3591d71-79ef-4c43-98ad-b2dd05920875.png">
+<img alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166715884-a3591d71-79ef-4c43-98ad-b2dd05920875.png">
 </p>
 
 
