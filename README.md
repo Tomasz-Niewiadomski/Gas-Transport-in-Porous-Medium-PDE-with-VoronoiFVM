@@ -10,8 +10,7 @@ Comparison with DifferentialEquations.jl solver yealding a marginally better res
 Successful error convergence in both cases - using Implicit & Explicit Euler method.
 
 
-<img width="716" alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166706913-1d835c46-f03f-4066-8f8d-12d7feb512f4.png">
-
-<img width="563" alt="Screenshot 2022-05-04 at 16 46 13" src="https://user-images.githubusercontent.com/74839077/166706938-0f2bb087-c6e5-4c5b-94b1-dd65c581d357.png">
-
-<img width="561" alt="Screenshot 2022-05-04 at 16 46 01" src="https://user-images.githubusercontent.com/74839077/166706948-a341777d-a04c-438f-a89d-c2bab23ad903.png">
+<img width="300" alt="Screenshot 2022-05-04 at 16 46 24" src="https://user-images.githubusercontent.com/74839077/166707294-d01b3971-54a8-4acc-bd83-33b7d82024ee.png">
+<img width="300" alt="Screenshot 2022-05-04 at 16 46 01" src="https://user-images.githubusercontent.com/74839077/166707343-845ef4b2-99cd-4724-8b93-b2be13c3c220.png">
+<img width="300" alt="Screenshot 2022-05-04 at 16 47 40" src="https://user-images.githubusercontent.com/74839077/166707391-9ef392dd-7e60-482c-8abb-e9a1f58ee773.png">
+<img width="300" alt="Screenshot 2022-05-04 at 16 48 10" src="https://user-images.githubusercontent.com/74839077/166707422-09870eab-b1a9-42da-98c7-53e52e859b50.png">
