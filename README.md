@@ -4,20 +4,28 @@ Main file : Report.jl \
 For a quick look : Report.html   <-- Limited to graphs at timestep = t0
 
 <h1> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-  <mstyle mathsize="1.2em">
-    <msub>
-      <mi>u</mi>
-      <mi>t</mi>
-    </msub>
-    <mo>=</mo>
-    <mi mathvariant="normal">&#x394;</mi>
-    <mo stretchy="false">(</mo>
-    <msup>
-      <mi>u</mi>
-      <mi>m</mi>
-    </msup>
-    <mo stretchy="false">)</mo>
-  </mstyle>
+  <msub>
+    <mi>u</mi>
+    <mi>t</mi>
+  </msub>
+  <mo>=</mo>
+  <mi mathvariant="normal">&#x394;</mi>
+  <mo stretchy="false">(</mo>
+  <msup>
+    <mi>u</mi>
+    <mi>m</mi>
+  </msup>
+  <mo stretchy="false">)</mo>
+  <mo>,</mo>
+  <mtext>&#xA0;</mtext>
+  <mi>u</mi>
+  <mo>=</mo>
+  <mi>u</mi>
+  <mo stretchy="false">(</mo>
+  <mi>x</mi>
+  <mo>,</mo>
+  <mi>t</mi>
+  <mo stretchy="false">)</mo>
 </math>
 </h1>
 
